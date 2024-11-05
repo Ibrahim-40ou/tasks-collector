@@ -6,7 +6,7 @@ import 'package:abm/resources/core/utils/common_functions.dart';
 import 'package:abm/resources/core/widgets/image_viewer/state/cubit/image_viewer_cubit.dart';
 import 'package:abm/resources/features/auth/presentation/state/bloc/auth_bloc.dart';
 import 'package:abm/resources/features/auth/presentation/state/cubit/timer_cubit.dart';
-import 'package:abm/resources/features/complaints/presentation/state/cubit/image_counter_cubit.dart';
+import 'package:abm/resources/features/tasks/presentation/state/cubit/image_counter_cubit.dart';
 import 'package:abm/resources/features/user_information/presentation/state/bloc/user_information_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -48,18 +48,8 @@ void main() async {
             create: (context) => AuthBloc(),
           ),
           BlocProvider<UserInformationBloc>(
-            create: (context) => UserInformationBloc()
-              ..add(
-                UpdateUserInformation(
-                  fullName: preferences!.getString('name') ?? '',
-                  avatar: preferences!.getString('avatar') ?? '',
-                  governorate: preferences!.getString('governorate_id') ?? '',
-                  phoneNumber: preferences!.getString('phone_number') ?? '',
-                ),
-              )
-              ..add(
-                FetchCurrentUserInformation(),
-              ),
+            create: (context) =>
+                UserInformationBloc()..add(SerializationUserEvent()),
           ),
           BlocProvider<TimerCubit>(
             create: (context) => TimerCubit(),

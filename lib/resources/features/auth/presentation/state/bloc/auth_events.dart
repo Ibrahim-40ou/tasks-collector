@@ -31,5 +31,3 @@ class RegisterRequest extends AuthEvent {
     required this.avatar,
   });
 }
-
-

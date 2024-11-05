@@ -13,8 +13,9 @@ class UserModel extends UserEntity {
       name: json['name'] ?? '',
       phoneNumber: json['phone'],
       avatar: json['avatar'] ?? '',
-      governorate:
-          json['governorate_id'] != null ? json['governorate_id'].toString() : '',
+      governorate: json['governorate_id'] != null
+          ? json['governorate_id'].toString()
+          : '',
     );
   }
 

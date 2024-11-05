@@ -22,7 +22,7 @@ class CustomBackButton extends StatelessWidget {
     return CustomButton(
       function: () {
         context.router.popForced(true);
-        if(function != null) {
+        if (function != null) {
           function!();
         }
       },

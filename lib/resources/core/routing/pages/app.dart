@@ -6,9 +6,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../features/complaints/presentation/pages/complaints.dart';
 import '../../../features/notifications/presentation/pages/notifications.dart';
 import '../../../features/statistics/presentation/pages/statistics.dart';
+import '../../../features/tasks/presentation/pages/tasks.dart';
 import '../../../features/user_information/presentation/pages/settings.dart';
 import '../routing_state/navigation_cubit.dart';
 
@@ -35,7 +35,7 @@ class App extends StatelessWidget {
                   context.read<NavigationCubit>().changePage(index);
                 },
                 children: [
-                  Complaints(),
+                  Tasks(),
                   Notifications(),
                   Statistics(),
                   Settings(),

@@ -80,7 +80,7 @@ class CustomStatistic extends StatelessWidget {
                 ),
                 SizedBox(width: 2.w),
                 CustomText(
-                  text: 'task'.tr(),
+                  text: 'tasks'.tr(),
                   size: CommonFunctions().englishCheck(context) ? 5.sp : 4.sp,
                   color: selected ? Colors.white : null,
                 ),

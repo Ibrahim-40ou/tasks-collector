@@ -1,4 +1,3 @@
-
 abstract class UserInformationRepository {
   Future<void> fetchCurrentUser();
 

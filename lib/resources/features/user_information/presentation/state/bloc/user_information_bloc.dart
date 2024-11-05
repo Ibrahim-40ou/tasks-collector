@@ -28,9 +28,25 @@ class UserInformationBloc
   UserInformationBloc() : super(UserInformationInitial()) {
     on<FetchCurrentUserInformation>(_fetchCurrentUserInformation);
     on<UpdateUserInformation>(_updateUserInformation);
+    on<SerializationUserEvent>(_serialize);
   }
 
-  void _fetchCurrentUserInformation(
+  Future<void> _serialize(
+    SerializationUserEvent event,
+    Emitter<UserInformationState> emit,
+  ) async {
+    await _updateUserInformation(
+        UpdateUserInformation(
+          fullName: preferences!.getString('name') ?? '',
+          avatar: preferences!.getString('avatar') ?? '',
+          governorate: preferences!.getString('governorate_id') ?? '',
+          phoneNumber: preferences!.getString('phone_number') ?? '',
+        ),
+        emit);
+    await _fetchCurrentUserInformation(FetchCurrentUserInformation(), emit);
+  }
+
+  Future<void> _fetchCurrentUserInformation(
     FetchCurrentUserInformation event,
     Emitter<UserInformationState> emit,
   ) async {
@@ -45,7 +61,7 @@ class UserInformationBloc
       ).call();
       if (result.isSuccess) {
         userInfo = result.data;
-        _setPreferences(userInfo, true);
+        await _setPreferences(userInfo, true);
         emit(FetchCurrentUserInformationSuccess(userData: userInfo));
       } else {
         return emit(FetchCurrentUserInformationFailure(failure: result.error));
@@ -53,13 +69,13 @@ class UserInformationBloc
     } else {
       return emit(
         FetchCurrentUserInformationSuccess(
-          userData: _getPreferences(),
+          userData: await _getPreferences(),
         ),
       );
     }
   }
 
-  void _updateUserInformation(
+  Future<void> _updateUserInformation(
     UpdateUserInformation event,
     Emitter<UserInformationState> emit,
   ) async {
@@ -83,7 +99,7 @@ class UserInformationBloc
         userInfo.governorate = event.governorate;
         userInfo.phoneNumber = event.phoneNumber;
         emit(UpdateUserInformationSuccess());
-        _setPreferences(userInfo, false);
+        await _setPreferences(userInfo, false);
         return emit(FetchCurrentUserInformationSuccess(userData: userInfo));
       } else {
         emit(UpdateUserInformationFailure(failure: result.error));
@@ -94,16 +110,16 @@ class UserInformationBloc
       userInfo.avatar = event.avatar;
       userInfo.governorate = event.governorate;
       userInfo.phoneNumber = event.phoneNumber;
-      _setPreferences(userInfo, false);
+      await _setPreferences(userInfo, false);
       emit(UpdateUserInformationSuccess());
       return emit(FetchCurrentUserInformationSuccess(userData: userInfo));
     }
   }
 
-  void _setPreferences(UserEntity userInfo, bool uploadAvatar) async {
+  Future<void> _setPreferences(UserEntity userInfo, bool uploadAvatar) async {
     preferences!.setString('name', userInfo.name ?? '');
     preferences!.setString('phone_number', userInfo.phoneNumber);
-    preferences!.setString('governorate', userInfo.governorate ?? '');
+    preferences!.setString('governorate_id', userInfo.governorate ?? '');
     preferences!.setString(
       'avatar',
       userInfo.avatar != null && uploadAvatar
@@ -112,7 +128,7 @@ class UserInformationBloc
     );
   }
 
-  UserEntity _getPreferences() {
+  Future<UserEntity> _getPreferences() async {
     return UserEntity(
       name: preferences!.getString('name'),
       phoneNumber: preferences!.getString('phone_number') ?? '',

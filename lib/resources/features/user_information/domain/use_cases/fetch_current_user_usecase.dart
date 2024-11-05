@@ -1,4 +1,3 @@
-
 import '../../../../core/utils/result.dart';
 import '../../data/repositories/user_information_repository_impl.dart';
 

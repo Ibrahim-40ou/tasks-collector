@@ -3,32 +3,32 @@ part of 'statistics_bloc.dart';
 @immutable
 sealed class StatisticsEvents {}
 
-class TotalComplaintsEvent extends StatisticsEvents {
-  final List<ComplaintEntity> complaints;
+class TotalTasksEvent extends StatisticsEvents {
+  final List<TaskEntity> tasks;
 
-  TotalComplaintsEvent({required this.complaints});
+  TotalTasksEvent({required this.tasks});
 }
 
-class ApprovedComplaintsEvent extends StatisticsEvents {
-  final List<ComplaintEntity> complaints;
+class ApprovedTasksEvent extends StatisticsEvents {
+  final List<TaskEntity> tasks;
 
-  ApprovedComplaintsEvent({required this.complaints});
+  ApprovedTasksEvent({required this.tasks});
 }
 
-class PendingComplaintsEvent extends StatisticsEvents {
-  final List<ComplaintEntity> complaints;
+class PendingTasksEvent extends StatisticsEvents {
+  final List<TaskEntity> tasks;
 
-  PendingComplaintsEvent({required this.complaints});
+  PendingTasksEvent({required this.tasks});
 }
 
-class RejectedComplaintsEvent extends StatisticsEvents {
-  final List<ComplaintEntity> complaints;
+class RejectedTasksEvent extends StatisticsEvents {
+  final List<TaskEntity> tasks;
 
-  RejectedComplaintsEvent({required this.complaints});
+  RejectedTasksEvent({required this.tasks});
 }
 
-class ProcessingComplaintsEvent extends StatisticsEvents {
-  final List<ComplaintEntity> complaints;
+class ProcessingTasksEvent extends StatisticsEvents {
+  final List<TaskEntity> tasks;
 
-  ProcessingComplaintsEvent({required this.complaints});
+  ProcessingTasksEvent({required this.tasks});
 }

@@ -18,3 +18,5 @@ class UpdateUserInformation extends UserInformationEvent {
     required this.phoneNumber,
   });
 }
+
+class SerializationUserEvent extends UserInformationEvent {}

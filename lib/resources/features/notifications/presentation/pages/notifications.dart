@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:abm/resources/core/sizing/size_config.dart';
 import 'package:abm/resources/features/notifications/presentation/widgets/notifications_shimmer.dart';
-import 'package:abm/resources/features/complaints/domain/entities/complaint_entity.dart';
-import 'package:abm/resources/features/complaints/presentation/state/bloc/complaints_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -15,10 +13,12 @@ import '../../../../core/services/internet_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../../../core/widgets/text.dart';
+import '../../../tasks/domain/entities/task_entity.dart';
+import '../../../tasks/presentation/state/bloc/tasks_bloc.dart';
 
 @RoutePage()
 class Notifications extends StatelessWidget {
-  late List<ComplaintEntity> complaints = [];
+  late List<TaskEntity> tasks = [];
 
   Notifications({super.key});
 
@@ -26,13 +26,13 @@ class Notifications extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDarkMode = CommonFunctions().darkModeCheck(context);
     CommonFunctions().changeStatusBarColor(false, isDarkMode, context, null);
-    return BlocProvider<ComplaintsBloc>(
-      create: (context) => ComplaintsBloc()..add(SerializationEvent()),
-      child: BlocConsumer<ComplaintsBloc, ComplaintsStates>(
-        listener: (BuildContext context, ComplaintsStates state) {},
-        builder: (BuildContext context, ComplaintsStates state) {
-          if (state is FetchComplaintsSuccess) {
-            complaints = state.complaints;
+    return BlocProvider<TasksBloc>(
+      create: (context) => TasksBloc()..add(SerializationEvent()),
+      child: BlocConsumer<TasksBloc, TasksStates>(
+        listener: (BuildContext context, TasksStates state) {},
+        builder: (BuildContext context, TasksStates state) {
+          if (state is FetchTasksSuccess) {
+            tasks = state.tasks;
           }
           return SafeArea(
             child: Scaffold(
@@ -41,11 +41,11 @@ class Notifications extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   _buildTitles(),
-                  (state is FetchComplaintsLoading)
+                  (state is FetchTasksLoading)
                       ? _buildLoadingNotifications(context, isDarkMode)
-                      : (state is UploadedOfflineComplaintsLoading)
+                      : (state is UploadedOfflineTasksLoading)
                           ? _buildLoadingNotifications(context, isDarkMode)
-                          : (state is DeletedOfflineComplaintsLoading)
+                          : (state is DeletedOfflineTasksLoading)
                               ? _buildLoadingNotifications(context, isDarkMode)
                               : _buildNotifications(context, isDarkMode),
                 ],
@@ -87,13 +87,13 @@ class Notifications extends StatelessWidget {
   Widget _buildNotifications(BuildContext context, bool isDarkMode) {
     return Expanded(
       child: ListView.separated(
-        itemCount: complaints.length,
+        itemCount: tasks.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () {
               context.router.push(
-                ComplaintDetails(
-                  complaint: complaints[index],
+                TaskDetails(
+                  task: tasks[index],
                 ),
               );
             },
@@ -133,7 +133,7 @@ class Notifications extends StatelessWidget {
 
                           if (snapshot.data == true) {
                             return CachedNetworkImage(
-                              imageUrl: complaints[index].media[0],
+                              imageUrl: tasks[index].media[0],
                               fit: BoxFit.cover,
                               placeholder: (context, url) {
                                 return Center(
@@ -151,7 +151,7 @@ class Notifications extends StatelessWidget {
                             );
                           } else {
                             return Image.file(
-                              File(complaints[index].media[0]),
+                              File(tasks[index].media[0]),
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return Center(
@@ -178,7 +178,7 @@ class Notifications extends StatelessWidget {
                         ),
                         SizedBox(height: 1.h),
                         CustomText(
-                          text: _formatDate(complaints[index].date),
+                          text: _formatDate(tasks[index].date),
                           size: 4.5.sp,
                           color:
                               Theme.of(context).textTheme.labelMedium!.color!,

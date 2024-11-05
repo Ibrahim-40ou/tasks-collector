@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:abm/resources/features/complaints/data/models/complaint_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-import '../../features/complaints/domain/entities/complaint_entity.dart';
+import '../../features/tasks/data/models/task_model.dart';
+import '../../features/tasks/domain/entities/task_entity.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -21,12 +21,12 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDB() async {
-    String path = join(await getDatabasesPath(), 'complaints.db');
+    String path = join(await getDatabasesPath(), 'tasks.db');
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
   Future<void> _createDB(Database db, int version) async {
-    await db.execute('''CREATE TABLE complaints (
+    await db.execute('''CREATE TABLE tasks (
       id INTEGER PRIMARY KEY,
       description TEXT NOT NULL,
       address TEXT NOT NULL,
@@ -40,32 +40,32 @@ class DatabaseHelper {
     )''');
   }
 
-  Future<int> insertComplaint(
-    ComplaintEntity complaint,
+  Future<int> insertTask(
+    TaskEntity task,
     String uploadStatus,
   ) async {
     final db = await database;
     return await db.insert(
-      'complaints',
+      'tasks',
       {
-        'id': complaint.id,
-        'description': complaint.description,
-        'address': complaint.address,
-        'lat': complaint.lat,
-        'lng': complaint.lng,
-        'governorateId': complaint.governorateId,
-        'date': complaint.date,
-        'media': complaint.media.join(','),
-        'statusId': complaint.statusId,
+        'id': task.id,
+        'description': task.description,
+        'address': task.address,
+        'lat': task.lat,
+        'lng': task.lng,
+        'governorateId': task.governorateId,
+        'date': task.date,
+        'media': task.media.join(','),
+        'statusId': task.statusId,
         'uploadStatus': uploadStatus,
       },
     );
   }
 
-  Future<List<ComplaintModel>> getWaitingComplaints() async {
+  Future<List<TaskModel>> getWaitingTasks() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
-      'complaints',
+      'tasks',
       where: 'uploadStatus = ?',
       whereArgs: ['waiting'],
     );
@@ -73,7 +73,7 @@ class DatabaseHelper {
     return List.generate(
       maps.length,
       (i) {
-        return ComplaintModel(
+        return TaskModel(
           id: maps[i]['id'],
           description: maps[i]['description'],
           address: maps[i]['address'],
@@ -88,21 +88,20 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> markComplaintAsDeleted(int id) async {
+  Future<int> markTaskAsDeleted(int id) async {
     final db = await database;
     return await db.update(
-      'complaints',
+      'tasks',
       {'uploadStatus': 'deleted'},
       where: 'id = ?',
       whereArgs: [id],
     );
   }
 
-
-  Future<List<ComplaintModel>> getDeletedComplaints() async {
+  Future<List<TaskModel>> getDeletedTasks() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
-      'complaints',
+      'tasks',
       where: 'uploadStatus = ?',
       whereArgs: ['deleted'],
     );
@@ -110,7 +109,7 @@ class DatabaseHelper {
     return List.generate(
       maps.length,
       (i) {
-        return ComplaintModel(
+        return TaskModel(
           id: maps[i]['id'],
           description: maps[i]['description'],
           address: maps[i]['address'],
@@ -125,10 +124,10 @@ class DatabaseHelper {
     );
   }
 
-  Future<List<ComplaintEntity>> getAllComplaints() async {
+  Future<List<TaskEntity>> getAllTasks() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
-      'complaints',
+      'tasks',
       where: 'uploadStatus != ?',
       whereArgs: ['deleted'],
     );
@@ -136,7 +135,7 @@ class DatabaseHelper {
     return List.generate(
       maps.length,
       (i) {
-        return ComplaintEntity(
+        return TaskEntity(
           id: maps[i]['id'],
           description: maps[i]['description'],
           address: maps[i]['address'],
@@ -151,43 +150,43 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> deleteAllComplaints() async {
+  Future<int> deleteAllTasks() async {
     final db = await database;
-    return await db.delete('complaints');
+    return await db.delete('tasks');
   }
 
-  Future<void> deleteAllWaitingComplaints() async {
+  Future<void> deleteAllWaitingTasks() async {
     final db = await database;
     await db.delete(
-      'complaints',
+      'tasks',
       where: 'statusId = ?',
       whereArgs: ['waiting'],
     );
   }
 
-  Future<void> deleteAllDeletedComplaints() async {
+  Future<void> deleteAllDeletedTasks() async {
     final db = await database;
     await db.delete(
-      'complaints',
+      'tasks',
       where: 'statusId = ?',
       whereArgs: ['deleted'],
     );
   }
 
-  Future<void> printAllComplaints() async {
-    final List<ComplaintEntity> complaints = await getAllComplaints();
+  Future<void> printAllTasks() async {
+    final List<TaskEntity> tasks = await getAllTasks();
     print('I am printing the database contents');
-    for (var complaint in complaints) {
+    for (var task in tasks) {
       print('-----------------------------------');
-      print('Complaint ID: ${complaint.id}');
-      print('Description: ${complaint.description}');
-      print('Address: ${complaint.address}');
-      print('Latitude: ${complaint.lat}');
-      print('Longitude: ${complaint.lng}');
-      print('Governorate ID: ${complaint.governorateId}');
-      print('Date: ${complaint.date}');
-      print('Media: ${complaint.media.join(', ')}');
-      print('Status ID: ${complaint.statusId}');
+      print('task ID: ${task.id}');
+      print('Description: ${task.description}');
+      print('Address: ${task.address}');
+      print('Latitude: ${task.lat}');
+      print('Longitude: ${task.lng}');
+      print('Governorate ID: ${task.governorateId}');
+      print('Date: ${task.date}');
+      print('Media: ${task.media.join(', ')}');
+      print('Status ID: ${task.statusId}');
       print('-----------------------------------');
     }
   }

@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:abm/resources/core/sizing/size_config.dart';
 import 'package:abm/resources/core/widgets/text.dart';
-import 'package:abm/resources/features/complaints/domain/entities/complaint_entity.dart';
-import 'package:abm/resources/features/complaints/presentation/state/bloc/complaints_bloc.dart';
 import 'package:abm/resources/features/statistics/presentation/state/statistics_bloc.dart';
 import 'package:abm/resources/features/statistics/presentation/widgets/statistic.dart';
 import 'package:auto_route/auto_route.dart';
@@ -18,14 +16,16 @@ import '../../../../core/routing/routes.gr.dart';
 import '../../../../core/services/internet_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/widgets/loading_indicator.dart';
-import '../../../complaints/presentation/state/cubit/counter_opacity_cubit.dart';
-import '../../../complaints/presentation/state/cubit/image_counter_cubit.dart';
-import '../../../complaints/presentation/widgets/shimmer_container.dart';
+import '../../../tasks/domain/entities/task_entity.dart';
+import '../../../tasks/presentation/state/bloc/tasks_bloc.dart';
+import '../../../tasks/presentation/state/cubit/counter_opacity_cubit.dart';
+import '../../../tasks/presentation/state/cubit/image_counter_cubit.dart';
+import '../../../tasks/presentation/widgets/shimmer_container.dart';
 
 @RoutePage()
 class Statistics extends StatelessWidget {
-  late bool _totalComplaints = true;
-  late List<ComplaintEntity> complaints = [];
+  late bool _totalTasks = true;
+  late List<TaskEntity> tasks = [];
 
   Statistics({super.key});
 
@@ -38,8 +38,8 @@ class Statistics extends StatelessWidget {
         BlocProvider<StatisticsBloc>(
           create: (context) => StatisticsBloc(),
         ),
-        BlocProvider<ComplaintsBloc>(
-          create: (context) => ComplaintsBloc()..add(SerializationEvent()),
+        BlocProvider<TasksBloc>(
+          create: (context) => TasksBloc()..add(SerializationEvent()),
         ),
       ],
       child: SafeArea(
@@ -57,16 +57,16 @@ class Statistics extends StatelessWidget {
                   children: [
                     _buildTitles(),
                     SizedBox(height: 1.h),
-                    BlocBuilder<ComplaintsBloc, ComplaintsStates>(
+                    BlocBuilder<TasksBloc, TasksStates>(
                       builder: (
                         BuildContext context,
-                        ComplaintsStates complaintsState,
+                        TasksStates tasksState,
                       ) {
-                        if (complaintsState is FetchComplaintsSuccess) {
-                          complaints = complaintsState.complaints;
+                        if (tasksState is FetchTasksSuccess) {
+                          tasks = tasksState.tasks;
                         }
                         List<ImageCounterCubit> pageCubits = List.generate(
-                          complaints.length,
+                          tasks.length,
                           (index) => ImageCounterCubit(),
                         );
                         return Expanded(
@@ -76,38 +76,35 @@ class Statistics extends StatelessWidget {
                                 context,
                                 isDarkMode,
                                 statisticsState,
-                                complaints,
+                                tasks,
                               ),
                               SizedBox(height: 1.h),
-                              if (complaintsState
-                                  is FetchComplaintsLoading) ...[
+                              if (tasksState is FetchTasksLoading) ...[
                                 _buildLoadingWidget(context)
                               ],
-                              if (complaintsState
-                              is UploadedOfflineComplaintsLoading) ...[
+                              if (tasksState
+                                  is UploadedOfflineTasksLoading) ...[
                                 _buildLoadingWidget(context)
                               ],
-                              if (complaintsState
-                              is DeletedOfflineComplaintsLoading) ...[
+                              if (tasksState is DeletedOfflineTasksLoading) ...[
                                 _buildLoadingWidget(context)
                               ],
-                              _buildComplaints(
+                              _buildTasks(
                                 context,
                                 isDarkMode,
                                 pageCubits,
-                                statisticsState is TotalComplaints
-                                    ? statisticsState.complaints
-                                    : statisticsState is ApprovedComplaints
-                                        ? statisticsState.complaints
-                                        : statisticsState is PendingComplaints
-                                            ? statisticsState.complaints
-                                            : statisticsState
-                                                    is RejectedComplaints
-                                                ? statisticsState.complaints
+                                statisticsState is TotalTasks
+                                    ? statisticsState.tasks
+                                    : statisticsState is ApprovedTasks
+                                        ? statisticsState.tasks
+                                        : statisticsState is PendingTasks
+                                            ? statisticsState.tasks
+                                            : statisticsState is RejectedTasks
+                                                ? statisticsState.tasks
                                                 : statisticsState
-                                                        is ProcessingComplaints
-                                                    ? statisticsState.complaints
-                                                    : complaints,
+                                                        is ProcessingTasks
+                                                    ? statisticsState.tasks
+                                                    : tasks,
                               ),
                             ],
                           ),
@@ -129,11 +126,11 @@ class Statistics extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomComplaintsShimmer(),
+          CustomTasksShimmer(),
           SizedBox(height: 1.h),
-          CustomComplaintsShimmer(),
+          CustomTasksShimmer(),
           SizedBox(height: 1.h),
-          CustomComplaintsShimmer(),
+          CustomTasksShimmer(),
         ],
       ),
     );
@@ -151,7 +148,7 @@ class Statistics extends StatelessWidget {
     BuildContext context,
     bool isDarkMode,
     StatisticsStates state,
-    List<ComplaintEntity> complaints,
+    List<TaskEntity> tasks,
   ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,14 +158,14 @@ class Statistics extends StatelessWidget {
           width: 100.w,
           icon: Iconsax.book,
           title: 'total tasks'.tr(),
-          number: '${complaints.length}',
+          number: '${tasks.length}',
           function: () {
             context.read<StatisticsBloc>().add(
-                  TotalComplaintsEvent(complaints: complaints),
+                  TotalTasksEvent(tasks: tasks),
                 );
-            _totalComplaints = true;
+            _totalTasks = true;
           },
-          selected: state is TotalComplaints || _totalComplaints,
+          selected: state is TotalTasks || _totalTasks,
         ),
         SizedBox(height: 1.h),
         Row(
@@ -180,14 +177,14 @@ class Statistics extends StatelessWidget {
               icon: Iconsax.tick_circle,
               title: 'done_2',
               number:
-                  '${complaints.where((complaint) => complaint.statusId == 4).toList().length}',
+                  '${tasks.where((task) => task.statusId == 4).toList().length}',
               function: () {
                 context.read<StatisticsBloc>().add(
-                      ApprovedComplaintsEvent(complaints: complaints),
+                      ApprovedTasksEvent(tasks: tasks),
                     );
-                _totalComplaints = false;
+                _totalTasks = false;
               },
-              selected: state is ApprovedComplaints,
+              selected: state is ApprovedTasks,
             ),
             SizedBox(width: 2.w),
             CustomStatistic(
@@ -195,14 +192,14 @@ class Statistics extends StatelessWidget {
               icon: Iconsax.info_circle,
               title: 'pending_2',
               number:
-                  '${complaints.where((complaint) => complaint.statusId == 1).toList().length}',
+                  '${tasks.where((task) => task.statusId == 1).toList().length}',
               function: () {
                 context.read<StatisticsBloc>().add(
-                      PendingComplaintsEvent(complaints: complaints),
+                      PendingTasksEvent(tasks: tasks),
                     );
-                _totalComplaints = false;
+                _totalTasks = false;
               },
-              selected: state is PendingComplaints,
+              selected: state is PendingTasks,
             ),
           ],
         ),
@@ -216,14 +213,14 @@ class Statistics extends StatelessWidget {
               icon: Iconsax.close_circle,
               title: 'canceled_2',
               number:
-                  '${complaints.where((complaint) => complaint.statusId == 3).toList().length}',
+                  '${tasks.where((task) => task.statusId == 3).toList().length}',
               function: () {
                 context.read<StatisticsBloc>().add(
-                      RejectedComplaintsEvent(complaints: complaints),
+                      RejectedTasksEvent(tasks: tasks),
                     );
-                _totalComplaints = false;
+                _totalTasks = false;
               },
-              selected: state is RejectedComplaints,
+              selected: state is RejectedTasks,
             ),
             SizedBox(width: 2.w),
             CustomStatistic(
@@ -231,14 +228,14 @@ class Statistics extends StatelessWidget {
               icon: Iconsax.activity,
               title: 'in progress_2',
               number:
-                  '${complaints.where((complaint) => complaint.statusId == 2).toList().length}',
+                  '${tasks.where((task) => task.statusId == 2).toList().length}',
               function: () {
                 context.read<StatisticsBloc>().add(
-                      ProcessingComplaintsEvent(complaints: complaints),
+                      ProcessingTasksEvent(tasks: tasks),
                     );
-                _totalComplaints = false;
+                _totalTasks = false;
               },
-              selected: state is ProcessingComplaints,
+              selected: state is ProcessingTasks,
             ),
           ],
         ),
@@ -246,22 +243,22 @@ class Statistics extends StatelessWidget {
     );
   }
 
-  Widget _buildComplaints(
+  Widget _buildTasks(
     BuildContext context,
     bool isDarkMode,
     List<ImageCounterCubit> pageCubits,
-    List<ComplaintEntity> complaints,
+    List<TaskEntity> tasks,
   ) {
     return ListView.separated(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: complaints.length,
+      itemCount: tasks.length,
       itemBuilder: (BuildContext context, int index) {
         final pageController = PageController();
         final counterOpacityCubit = CounterOpacityCubit();
         Timer? timer;
 
-        complaints.sort(
+        tasks.sort(
           (a, b) {
             DateTime dateA = DateTime.parse(a.date);
             DateTime dateB = DateTime.parse(b.date);
@@ -272,8 +269,8 @@ class Statistics extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             context.router.push(
-              ComplaintDetails(
-                complaint: complaints[index],
+              TaskDetails(
+                task: tasks[index],
               ),
             );
           },
@@ -294,14 +291,14 @@ class Statistics extends StatelessWidget {
               children: [
                 CustomText(
                   text:
-                      '${CommonFunctions().getStatus(complaints[index].statusId)}_1'
+                      '${CommonFunctions().getStatus(tasks[index].statusId)}_1'
                           .tr(),
                   color: Theme.of(context).colorScheme.primary,
                   weight: FontWeight.w600,
                 ),
                 SizedBox(height: 1.h),
                 CustomText(
-                  text: complaints[index].description,
+                  text: tasks[index].description,
                   size: 5.sp,
                 ),
                 SizedBox(height: 1.h),
@@ -312,7 +309,7 @@ class Statistics extends StatelessWidget {
                     children: [
                       PageView.builder(
                         controller: pageController,
-                        itemCount: complaints[index].media.length,
+                        itemCount: tasks[index].media.length,
                         onPageChanged: (pageIndex) {
                           pageCubits[index].changeImage(pageIndex);
                           counterOpacityCubit.showCounter();
@@ -329,7 +326,7 @@ class Statistics extends StatelessWidget {
                             onTap: () {
                               context.router.push(
                                 ImageViewer(
-                                  imageUrls: complaints[index].media,
+                                  imageUrls: tasks[index].media,
                                   initialIndex: mediaIndex,
                                 ),
                               );
@@ -365,7 +362,7 @@ class Statistics extends StatelessWidget {
                                     if (snapshot.data == true) {
                                       return CachedNetworkImage(
                                         imageUrl:
-                                            complaints[index].media[mediaIndex],
+                                            tasks[index].media[mediaIndex],
                                         fit: BoxFit.cover,
                                         placeholder: (context, url) {
                                           return Center(
@@ -384,8 +381,7 @@ class Statistics extends StatelessWidget {
                                       );
                                     } else {
                                       return Image.file(
-                                        File(complaints[index]
-                                            .media[mediaIndex]),
+                                        File(tasks[index].media[mediaIndex]),
                                         fit: BoxFit.cover,
                                         errorBuilder:
                                             (context, error, stackTrace) {
@@ -425,7 +421,7 @@ class Statistics extends StatelessWidget {
                                     ),
                                     child: CustomText(
                                       text:
-                                          '${pageIndex + 1}/${complaints[index].media.length}',
+                                          '${pageIndex + 1}/${tasks[index].media.length}',
                                       color: Colors.white,
                                       size: 4.sp,
                                     ),
@@ -455,13 +451,13 @@ class Statistics extends StatelessWidget {
                         ),
                         SizedBox(width: 2.w),
                         CustomText(
-                          text: complaints[index].address,
+                          text: tasks[index].address,
                           size: 4.5.sp,
                         ),
                       ],
                     ),
                     CustomText(
-                      text: _formatDate(complaints[index].date),
+                      text: _formatDate(tasks[index].date),
                       size: 4.5.sp,
                     ),
                   ],

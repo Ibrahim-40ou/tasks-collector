@@ -85,16 +85,15 @@ class Login extends StatelessWidget {
         SizedBox(height: 2.h),
         CustomText(
           text: 'enter your mobile number'.tr(),
-          size: CommonFunctions().englishCheck(context)
-              ? 11.sp
-              : 8.sp,
+          size: CommonFunctions().englishCheck(context) ? 11.sp : 8.sp,
           weight: FontWeight.bold,
           lineHeight: 0.1.h,
         ),
         SizedBox(height: 1.h),
         CustomText(
           text:
-              "we'll send you a 6-digit verification code to your mobile number to confirm your account".tr(),
+              "we'll send you a 6-digit verification code to your mobile number to confirm your account"
+                  .tr(),
         ),
       ],
     );

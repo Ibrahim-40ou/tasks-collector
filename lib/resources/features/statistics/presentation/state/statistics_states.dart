@@ -5,32 +5,32 @@ sealed class StatisticsStates {}
 
 class StatisticsInitial extends StatisticsStates {}
 
-class TotalComplaints extends StatisticsStates {
-  final List<ComplaintEntity> complaints;
+class TotalTasks extends StatisticsStates {
+  final List<TaskEntity> tasks;
 
-  TotalComplaints({required this.complaints});
+  TotalTasks({required this.tasks});
 }
 
-class ApprovedComplaints extends StatisticsStates {
-  final List<ComplaintEntity> complaints;
+class ApprovedTasks extends StatisticsStates {
+  final List<TaskEntity> tasks;
 
-  ApprovedComplaints({required this.complaints});
+  ApprovedTasks({required this.tasks});
 }
 
-class PendingComplaints extends StatisticsStates {
-  final List<ComplaintEntity> complaints;
+class PendingTasks extends StatisticsStates {
+  final List<TaskEntity> tasks;
 
-  PendingComplaints({required this.complaints});
+  PendingTasks({required this.tasks});
 }
 
-class RejectedComplaints extends StatisticsStates {
-  final List<ComplaintEntity> complaints;
+class RejectedTasks extends StatisticsStates {
+  final List<TaskEntity> tasks;
 
-  RejectedComplaints({required this.complaints});
+  RejectedTasks({required this.tasks});
 }
 
-class ProcessingComplaints extends StatisticsStates {
-  final List<ComplaintEntity> complaints;
+class ProcessingTasks extends StatisticsStates {
+  final List<TaskEntity> tasks;
 
-  ProcessingComplaints({required this.complaints});
+  ProcessingTasks({required this.tasks});
 }

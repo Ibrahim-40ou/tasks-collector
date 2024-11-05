@@ -56,9 +56,7 @@ class CustomField extends StatelessWidget {
         CustomText(
           text: labelText,
           weight: FontWeight.bold,
-          size: CommonFunctions().englishCheck(context)
-              ? 5.5.sp
-              : 5.sp,
+          size: CommonFunctions().englishCheck(context) ? 5.5.sp : 5.sp,
         ),
         SizedBox(height: 1.h),
         SizedBox(
@@ -67,7 +65,7 @@ class CustomField extends StatelessWidget {
             maxLines: maxLines,
             minLines: 1,
             onTap: () {
-              if(onTap != null) {
+              if (onTap != null) {
                 onTap!();
               }
             },
@@ -98,9 +96,7 @@ class CustomField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(
                   width: 1,
-                  color: isDarkMode
-                      ? Colors.white
-                      : Colors.black,
+                  color: isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
               focusedBorder: OutlineInputBorder(

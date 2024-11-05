@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../complaints/domain/entities/complaint_entity.dart';
+import '../../../tasks/domain/entities/task_entity.dart';
 
 part 'statistics_events.dart';
 
@@ -9,56 +9,53 @@ part 'statistics_states.dart';
 
 class StatisticsBloc extends Bloc<StatisticsEvents, StatisticsStates> {
   StatisticsBloc() : super(StatisticsInitial()) {
-    on<TotalComplaintsEvent>(_totalComplaints);
-    on<PendingComplaintsEvent>(_pendingComplaints);
-    on<ApprovedComplaintsEvent>(_approvedComplaints);
-    on<RejectedComplaintsEvent>(_rejectedComplaints);
-    on<ProcessingComplaintsEvent>(_processingComplaints);
+    on<TotalTasksEvent>(_totalTasks);
+    on<PendingTasksEvent>(_pendingTasks);
+    on<ApprovedTasksEvent>(_approvedTasks);
+    on<RejectedTasksEvent>(_rejectedTasks);
+    on<ProcessingTasksEvent>(_processingTasks);
   }
 
-
-  void _totalComplaints(
-    TotalComplaintsEvent event,
+  void _totalTasks(
+    TotalTasksEvent event,
     Emitter<StatisticsStates> emit,
   ) {
-    emit(TotalComplaints(complaints: event.complaints));
+    emit(TotalTasks(tasks: event.tasks));
   }
 
-  void _pendingComplaints(
-    PendingComplaintsEvent event,
+  void _pendingTasks(
+    PendingTasksEvent event,
     Emitter<StatisticsStates> emit,
   ) {
-    final pendingComplaints =
-        event.complaints.where((complaint) => complaint.statusId == 1).toList();
-    emit(PendingComplaints(complaints: pendingComplaints));
+    final pendingTasks =
+        event.tasks.where((task) => task.statusId == 1).toList();
+    emit(PendingTasks(tasks: pendingTasks));
   }
 
-  void _processingComplaints(
-    ProcessingComplaintsEvent event,
+  void _processingTasks(
+    ProcessingTasksEvent event,
     Emitter<StatisticsStates> emit,
   ) {
-    final processingComplaints =
-        event.complaints.where((complaint) => complaint.statusId == 2).toList();
-    emit(ProcessingComplaints(complaints: processingComplaints));
+    final processingTasks =
+        event.tasks.where((task) => task.statusId == 2).toList();
+    emit(ProcessingTasks(tasks: processingTasks));
   }
 
-  void _rejectedComplaints(
-      RejectedComplaintsEvent event,
-      Emitter<StatisticsStates> emit,
-      ) {
-    final rejectedComplaints =
-    event.complaints.where((complaint) => complaint.statusId == 3).toList();
-    emit(RejectedComplaints(complaints: rejectedComplaints));
-  }
-
-  void _approvedComplaints(
-    ApprovedComplaintsEvent event,
+  void _rejectedTasks(
+    RejectedTasksEvent event,
     Emitter<StatisticsStates> emit,
   ) {
-    final approvedComplaints =
-        event.complaints.where((complaint) => complaint.statusId == 4).toList();
-    emit(ApprovedComplaints(complaints: approvedComplaints));
+    final rejectedTasks =
+        event.tasks.where((task) => task.statusId == 3).toList();
+    emit(RejectedTasks(tasks: rejectedTasks));
   }
 
-
+  void _approvedTasks(
+    ApprovedTasksEvent event,
+    Emitter<StatisticsStates> emit,
+  ) {
+    final approvedTasks =
+        event.tasks.where((task) => task.statusId == 4).toList();
+    emit(ApprovedTasks(tasks: approvedTasks));
+  }
 }

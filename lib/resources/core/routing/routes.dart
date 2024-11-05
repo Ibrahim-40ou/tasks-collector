@@ -15,9 +15,9 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: Statistics.page),
         AutoRoute(page: Notifications.page),
         AutoRoute(page: ProfileInformation.page),
-        AutoRoute(page: Complaints.page),
-        AutoRoute(page: AddComplaintRoute.page),
+        AutoRoute(page: Tasks.page),
+        AutoRoute(page: AddTaskRoute.page),
         AutoRoute(page: ImageViewer.page),
-        AutoRoute(page: ComplaintDetails.page),
+        AutoRoute(page: TaskDetails.page),
       ];
 }

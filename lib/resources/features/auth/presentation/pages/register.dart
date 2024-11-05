@@ -222,7 +222,8 @@ class Register extends StatelessWidget {
           ),
           child: BlocBuilder<ImageSelectionBloc, ImageSelectionState>(
             builder: (context, state) {
-              if (state is SelectImageSuccess && state.selectedImages[0] != null) {
+              if (state is SelectImageSuccess &&
+                  state.selectedImages[0] != null) {
                 _selectedImage = state.selectedImages[0];
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(100),
