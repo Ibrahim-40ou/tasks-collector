@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../../core/services/internet_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../../../core/widgets/text.dart';
@@ -204,6 +203,7 @@ class Tasks extends StatelessWidget {
               return dateB.compareTo(dateA);
             },
           );
+
           return GestureDetector(
             onTap: () {
               context.router.push(
@@ -213,15 +213,9 @@ class Tasks extends StatelessWidget {
               );
             },
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 0.5.h,
-                horizontal: 2.w,
-              ),
+              padding: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 2.w),
               child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 1.h,
-                  horizontal: 2.5.w,
-                ),
+                padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.5.w),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: isDarkMode
@@ -270,9 +264,7 @@ class Tasks extends StatelessWidget {
                                         color:
                                             Theme.of(context).colorScheme.error,
                                         disabled:
-                                            loadingState is DeleteTaskLoading
-                                                ? true
-                                                : false,
+                                            loadingState is DeleteTaskLoading,
                                         child: loadingState is DeleteTaskLoading
                                             ? CustomLoadingIndicator(
                                                 color: isDarkMode
@@ -311,6 +303,7 @@ class Tasks extends StatelessWidget {
                       size: 5.sp,
                     ),
                     SizedBox(height: 1.h),
+
                     SizedBox(
                       height: 25.h,
                       width: 100.w,
@@ -325,108 +318,59 @@ class Tasks extends StatelessWidget {
                               timer?.cancel();
                               timer = Timer(
                                 Duration(seconds: 2),
-                                () {
-                                  counterOpacityCubit.hideCounter();
-                                },
+                                () => counterOpacityCubit.hideCounter(),
                               );
                             },
                             itemBuilder: (context, mediaIndex) {
-                              return FutureBuilder<bool>(
-                                future:
-                                    ConnectionServices().isInternetAvailable(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return Center(
-                                      child: CustomLoadingIndicator(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                      ),
-                                    );
-                                  }
-
-                                  if (snapshot.hasError) {
-                                    return Center(
-                                      child: Text("Error: ${snapshot.error}"),
-                                    );
-                                  }
-
-                                  if (snapshot.data == true) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        context.router.push(
-                                          ImageViewer(
-                                            imageUrls: tasks[index].media,
-                                            initialIndex: mediaIndex,
-                                          ),
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 0.5),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: CachedNetworkImage(
+                              return GestureDetector(
+                                onTap: () {
+                                  context.router.push(
+                                    ImageViewer(
+                                      imageUrls: tasks[index].media,
+                                      initialIndex: mediaIndex,
+                                    ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 0.5),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: tasks[index]
+                                            .media[mediaIndex]
+                                            .contains('http')
+                                        ? CachedNetworkImage(
                                             imageUrl:
                                                 tasks[index].media[mediaIndex],
                                             fit: BoxFit.cover,
-                                            placeholder: (context, url) {
-                                              return Center(
-                                                child: CustomLoadingIndicator(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary,
-                                                ),
-                                              );
-                                            },
-                                            errorWidget: (context, url, error) {
-                                              return Center(
-                                                child: Icon(
-                                                  Icons.error,
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        context.router.push(
-                                          ImageViewer(
-                                            imageUrls: tasks[index].media,
-                                            initialIndex: mediaIndex,
-                                          ),
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 0.5),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: Image.file(
+                                            placeholder: (context, url) =>
+                                                Center(
+                                              child: CustomLoadingIndicator(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              ),
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) => Center(
+                                              child: Icon(Icons.error),
+                                            ),
+                                          )
+                                        : Image.file(
                                             File(
                                                 tasks[index].media[mediaIndex]),
                                             fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return Center(
-                                                child: Icon(Icons.error),
-                                              );
-                                            },
+                                            errorBuilder: (context, error,
+                                                    stackTrace) =>
+                                                Center(
+                                                    child: Icon(Icons.error)),
                                           ),
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
+                                  ),
+                                ),
                               );
                             },
                           ),
+                          // Page Counter
                           BlocBuilder<ImageCounterCubit, int>(
                             bloc: pageCubits[index],
                             builder: (context, pageIndex) {
@@ -442,9 +386,7 @@ class Tasks extends StatelessWidget {
                                           const Duration(milliseconds: 300),
                                       child: Container(
                                         padding: EdgeInsets.symmetric(
-                                          vertical: 1.w,
-                                          horizontal: 2.w,
-                                        ),
+                                            vertical: 1.w, horizontal: 2.w),
                                         decoration: BoxDecoration(
                                           color: Colors.black.withOpacity(0.5),
                                           borderRadius:
@@ -467,6 +409,7 @@ class Tasks extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 1.h),
+                    // Location and Date Row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,

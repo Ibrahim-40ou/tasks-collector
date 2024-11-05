@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/routing/routes.gr.dart';
-import '../../../../core/services/internet_services.dart';
+
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../../../core/widgets/text.dart';
@@ -31,6 +31,7 @@ class Notifications extends StatelessWidget {
       child: BlocConsumer<TasksBloc, TasksStates>(
         listener: (BuildContext context, TasksStates state) {},
         builder: (BuildContext context, TasksStates state) {
+          // context.read<InternetBloc>().add(CheckConnection());
           if (state is FetchTasksSuccess) {
             tasks = state.tasks;
           }
@@ -113,26 +114,8 @@ class Notifications extends StatelessWidget {
                     width: 10.h,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
-                      child: FutureBuilder<bool>(
-                        future: ConnectionServices().isInternetAvailable(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(
-                              child: CustomLoadingIndicator(
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            );
-                          }
-
-                          if (snapshot.hasError) {
-                            return Center(
-                              child: Icon(Icons.error), // Handle error
-                            );
-                          }
-
-                          if (snapshot.data == true) {
-                            return CachedNetworkImage(
+                      child: tasks[index].media[0].contains('https')
+                          ? CachedNetworkImage(
                               imageUrl: tasks[index].media[0],
                               fit: BoxFit.cover,
                               placeholder: (context, url) {
@@ -148,9 +131,8 @@ class Notifications extends StatelessWidget {
                                   child: Icon(Icons.error),
                                 );
                               },
-                            );
-                          } else {
-                            return Image.file(
+                            )
+                          : Image.file(
                               File(tasks[index].media[0]),
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
@@ -158,10 +140,7 @@ class Notifications extends StatelessWidget {
                                   child: Icon(Icons.error),
                                 );
                               },
-                            );
-                          }
-                        },
-                      ),
+                            ),
                     ),
                   ),
                   SizedBox(width: 3.w),

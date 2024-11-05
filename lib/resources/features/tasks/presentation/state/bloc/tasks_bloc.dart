@@ -48,7 +48,7 @@ class TasksBloc extends Bloc<TasksEvents, TasksStates> {
   ) async {
     emit(UploadedOfflineTasksLoading());
     try {
-      if (await ConnectionServices().isInternetAvailable()) {
+      if (await InternetServices().isInternetAvailable()) {
         final List<TaskModel> tasksToUpload =
             await DatabaseHelper().getWaitingTasks();
         bool success = true;
@@ -84,7 +84,7 @@ class TasksBloc extends Bloc<TasksEvents, TasksStates> {
   ) async {
     emit(DeletedOfflineTasksLoading());
     try {
-      if (await ConnectionServices().isInternetAvailable()) {
+      if (await InternetServices().isInternetAvailable()) {
         final List<TaskModel> tasksToDelete =
             await DatabaseHelper().getDeletedTasks();
         bool success = true;
@@ -126,7 +126,7 @@ class TasksBloc extends Bloc<TasksEvents, TasksStates> {
     DeleteTask event,
     Emitter<TasksStates> emit,
   ) async {
-    if (await ConnectionServices().isInternetAvailable()) {
+    if (await InternetServices().isInternetAvailable()) {
       final result = await DeleteTasksUseCase(
         tasksRepositoryImpl: TasksRepositoryImpl(
           tasksDatasource: TasksDatasource(
@@ -168,7 +168,7 @@ class TasksBloc extends Bloc<TasksEvents, TasksStates> {
     Emitter<TasksStates> emit,
   ) async {
     emit(FetchTasksLoading());
-    if (await ConnectionServices().isInternetAvailable()) {
+    if (await InternetServices().isInternetAvailable()) {
       final Result result = await FetchTasksUseCase(
         tasksRepositoryImpl: TasksRepositoryImpl(
           tasksDatasource: TasksDatasource(
@@ -201,7 +201,7 @@ class TasksBloc extends Bloc<TasksEvents, TasksStates> {
     Emitter<TasksStates> emit,
   ) async {
     emit(AddTaskLoading());
-    if (await ConnectionServices().isInternetAvailable()) {
+    if (await InternetServices().isInternetAvailable()) {
       final Result result = await AddTaskUseCase(
         tasksRepositoryImpl: TasksRepositoryImpl(
           tasksDatasource: TasksDatasource(

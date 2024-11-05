@@ -7,7 +7,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../services/internet_services.dart';
 import '../../../utils/common_functions.dart';
 import '../../loading_indicator.dart';
 import '../../text.dart';
@@ -72,29 +71,8 @@ class ImageViewer extends StatelessWidget {
               controller: cubit.pageController,
               onPageChanged: cubit.updateIndex,
               itemBuilder: (context, index) {
-                return FutureBuilder<bool>(
-                  future: ConnectionServices().isInternetAvailable(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CustomLoadingIndicator(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      );
-                    }
-
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Icon(
-                          Icons.error,
-                          color: Theme.of(context).colorScheme.error,
-                          size: 6.w,
-                        ),
-                      );
-                    }
-
-                    if (snapshot.data == true) {
-                      return CachedNetworkImage(
+                return imageUrls[index].contains('http')
+                    ? CachedNetworkImage(
                         imageUrl: imageUrls[index],
                         fit: BoxFit.contain,
                         placeholder: (context, url) => Center(
@@ -109,9 +87,8 @@ class ImageViewer extends StatelessWidget {
                             size: 6.w,
                           ),
                         ),
-                      );
-                    } else {
-                      return Image.file(
+                      )
+                    : Image.file(
                         File(imageUrls[index]),
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
@@ -124,9 +101,6 @@ class ImageViewer extends StatelessWidget {
                           );
                         },
                       );
-                    }
-                  },
-                );
               },
             );
           },

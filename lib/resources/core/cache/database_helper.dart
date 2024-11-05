@@ -174,20 +174,20 @@ class DatabaseHelper {
   }
 
   Future<void> printAllTasks() async {
-    final List<TaskEntity> tasks = await getAllTasks();
-    print('I am printing the database contents');
-    for (var task in tasks) {
-      print('-----------------------------------');
-      print('task ID: ${task.id}');
-      print('Description: ${task.description}');
-      print('Address: ${task.address}');
-      print('Latitude: ${task.lat}');
-      print('Longitude: ${task.lng}');
-      print('Governorate ID: ${task.governorateId}');
-      print('Date: ${task.date}');
-      print('Media: ${task.media.join(', ')}');
-      print('Status ID: ${task.statusId}');
-      print('-----------------------------------');
-    }
+    // final List<TaskEntity> tasks = await getAllTasks();
+    // print('I am printing the database contents');
+    // for (var task in tasks) {
+    //   print('-----------------------------------');
+    //   print('task ID: ${task.id}');
+    //   print('Description: ${task.description}');
+    //   print('Address: ${task.address}');
+    //   print('Latitude: ${task.lat}');
+    //   print('Longitude: ${task.lng}');
+    //   print('Governorate ID: ${task.governorateId}');
+    //   print('Date: ${task.date}');
+    //   print('Media: ${task.media.join(', ')}');
+    //   print('Status ID: ${task.statusId}');
+    //   print('-----------------------------------');
+    // }
   }
 }

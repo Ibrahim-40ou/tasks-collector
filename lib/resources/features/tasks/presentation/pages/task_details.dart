@@ -13,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../core/routing/routes.gr.dart';
-import '../../../../core/services/internet_services.dart';
+
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../domain/entities/task_entity.dart';
 import '../state/cubit/counter_opacity_cubit.dart';
@@ -30,6 +30,7 @@ class TaskDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // context.read<InternetBloc>().add(CheckConnection());
     bool isDarkMode = CommonFunctions().darkModeCheck(context);
     return SafeArea(
       child: Scaffold(
@@ -125,29 +126,8 @@ class TaskDetails extends StatelessWidget {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: FutureBuilder<bool>(
-                                future:
-                                    ConnectionServices().isInternetAvailable(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return Center(
-                                      child: CustomLoadingIndicator(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                      ),
-                                    ); // Loading state
-                                  }
-
-                                  if (snapshot.hasError) {
-                                    return Center(
-                                      child: Icon(Icons.error), // Handle error
-                                    );
-                                  }
-
-                                  if (snapshot.data == true) {
-                                    return CachedNetworkImage(
+                              child: task.media[index].contains('http')
+                                  ? CachedNetworkImage(
                                       imageUrl: task.media[index],
                                       fit: BoxFit.cover,
                                       placeholder: (context, url) => Center(
@@ -163,9 +143,8 @@ class TaskDetails extends StatelessWidget {
                                           Icons.error,
                                         ),
                                       ),
-                                    );
-                                  } else {
-                                    return Image.file(
+                                    )
+                                  : Image.file(
                                       File(task.media[index]),
                                       fit: BoxFit.cover,
                                       errorBuilder:
@@ -174,10 +153,7 @@ class TaskDetails extends StatelessWidget {
                                           child: Icon(Icons.error),
                                         );
                                       },
-                                    );
-                                  }
-                                },
-                              ),
+                                    ),
                             ),
                           ),
                         );

@@ -92,6 +92,7 @@ class AddTaskPage extends StatelessWidget {
                                 }
                               },
                               builder: (BuildContext context, addTaskState) {
+                                // context.read<InternetBloc>().add(CheckConnection());
                                 return Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,

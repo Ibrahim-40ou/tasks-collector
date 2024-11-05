@@ -13,7 +13,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../core/routing/routes.gr.dart';
-import '../../../../core/services/internet_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../../tasks/domain/entities/task_entity.dart';
@@ -337,30 +336,10 @@ class Statistics extends StatelessWidget {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: FutureBuilder<bool>(
-                                  future: ConnectionServices()
-                                      .isInternetAvailable(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Center(
-                                        child: CustomLoadingIndicator(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ),
-                                      );
-                                    }
-
-                                    if (snapshot.hasError) {
-                                      return Center(
-                                        child:
-                                            Icon(Icons.error), // Handle error
-                                      );
-                                    }
-
-                                    if (snapshot.data == true) {
-                                      return CachedNetworkImage(
+                                child: tasks[index]
+                                        .media[mediaIndex]
+                                        .contains('https')
+                                    ? CachedNetworkImage(
                                         imageUrl:
                                             tasks[index].media[mediaIndex],
                                         fit: BoxFit.cover,
@@ -378,9 +357,8 @@ class Statistics extends StatelessWidget {
                                             child: Icon(Icons.error),
                                           );
                                         },
-                                      );
-                                    } else {
-                                      return Image.file(
+                                      )
+                                    : Image.file(
                                         File(tasks[index].media[mediaIndex]),
                                         fit: BoxFit.cover,
                                         errorBuilder:
@@ -389,10 +367,7 @@ class Statistics extends StatelessWidget {
                                             child: Icon(Icons.error),
                                           );
                                         },
-                                      );
-                                    }
-                                  },
-                                ),
+                                      ),
                               ),
                             ),
                           );

@@ -44,7 +44,7 @@ class LocalTasksDatasource {
       tasksToInsert.add(task);
     }
     for (TaskModel task in tasksToInsert) {
-      if (await ConnectionServices().isInternetAvailable()) {
+      if (await InternetServices().isInternetAvailable()) {
         await databaseHelper.insertTask(task, 'uploaded');
       } else {
         await databaseHelper.insertTask(task, 'waiting');
@@ -54,7 +54,7 @@ class LocalTasksDatasource {
   }
 
   Future<void> addTask(TaskEntity task) async {
-    if (await ConnectionServices().isInternetAvailable()) {
+    if (await InternetServices().isInternetAvailable()) {
       await databaseHelper.insertTask(task, 'uploaded');
       databaseHelper.printAllTasks();
     } else {

@@ -51,7 +51,7 @@ class UserInformationBloc
     Emitter<UserInformationState> emit,
   ) async {
     emit(FetchCurrentUserInformationLoading());
-    if (await ConnectionServices().isInternetAvailable()) {
+    if (await InternetServices().isInternetAvailable()) {
       final Result result = await FetchCurrentUserUsecase(
         userInformationRepositoryImpl: UserInformationRepositoryImpl(
           userInformationDataSource: UserInformationDataSource(
@@ -80,7 +80,7 @@ class UserInformationBloc
     Emitter<UserInformationState> emit,
   ) async {
     emit(UpdateUserInformationLoading());
-    if (await ConnectionServices().isInternetAvailable()) {
+    if (await InternetServices().isInternetAvailable()) {
       emit(UpdateUserInformationLoading());
       final Result result = await UpdateUserInformationUseCase(
         userInformationRepositoryImpl: UserInformationRepositoryImpl(
