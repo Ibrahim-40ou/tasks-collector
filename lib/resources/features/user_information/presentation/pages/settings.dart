@@ -7,6 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../core/routing/routes.gr.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/widgets/button.dart';
@@ -324,16 +325,28 @@ class Settings extends StatelessWidget {
               weight: FontWeight.w500,
             ),
           ] else ...[
-            CircleAvatar(
-              radius: 60,
-              backgroundColor: isDarkMode
-                  ? Theme.of(context).colorScheme.tertiary
-                  : Theme.of(context).colorScheme.secondary,
-              child: Center(
-                child: Icon(
-                  Iconsax.user,
-                  size: 6.5.w,
-                  color: Colors.black,
+            SizedBox(
+              height: 15.h,
+              width: 15.h,
+              child: CircleAvatar(
+                radius: 60,
+                backgroundColor: isDarkMode
+                    ? Theme.of(context).colorScheme.tertiary
+                    : Theme.of(context).colorScheme.secondary,
+                child: Center(
+                  child: state is UpdateUserInformationLoading
+                      ? CustomLoadingIndicator(
+                          color: Theme.of(context).colorScheme.primary,
+                        )
+                      : state is FetchCurrentUserInformationLoading
+                          ? CustomLoadingIndicator(
+                              color: Theme.of(context).colorScheme.primary,
+                            )
+                          : Icon(
+                              Iconsax.user,
+                              size: 6.5.w,
+                              color: Colors.black,
+                            ),
                 ),
               ),
             ),

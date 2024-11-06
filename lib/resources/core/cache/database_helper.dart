@@ -151,6 +151,7 @@ class DatabaseHelper {
   }
 
   Future<int> deleteAllTasks() async {
+    print('hey');
     final db = await database;
     return await db.delete('tasks');
   }

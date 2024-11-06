@@ -26,35 +26,31 @@ class Notifications extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDarkMode = CommonFunctions().darkModeCheck(context);
     CommonFunctions().changeStatusBarColor(false, isDarkMode, context, null);
-    return BlocProvider<TasksBloc>(
-      create: (context) => TasksBloc()..add(SerializationEvent()),
-      child: BlocConsumer<TasksBloc, TasksStates>(
-        listener: (BuildContext context, TasksStates state) {},
-        builder: (BuildContext context, TasksStates state) {
-          // context.read<InternetBloc>().add(CheckConnection());
-          if (state is FetchTasksSuccess) {
-            tasks = state.tasks;
-          }
-          return SafeArea(
-            child: Scaffold(
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _buildTitles(),
-                  (state is FetchTasksLoading)
-                      ? _buildLoadingNotifications(context, isDarkMode)
-                      : (state is UploadedOfflineTasksLoading)
-                          ? _buildLoadingNotifications(context, isDarkMode)
-                          : (state is DeletedOfflineTasksLoading)
-                              ? _buildLoadingNotifications(context, isDarkMode)
-                              : _buildNotifications(context, isDarkMode),
-                ],
-              ),
+    return BlocConsumer<TasksBloc, TasksStates>(
+      listener: (BuildContext context, TasksStates state) {},
+      builder: (BuildContext context, TasksStates state) {
+        if (state is FetchTasksSuccess) {
+          tasks = state.tasks;
+        }
+        return SafeArea(
+          child: Scaffold(
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildTitles(),
+                (state is FetchTasksLoading)
+                    ? _buildLoadingNotifications(context, isDarkMode)
+                    : (state is UploadedOfflineTasksLoading)
+                        ? _buildLoadingNotifications(context, isDarkMode)
+                        : (state is DeletedOfflineTasksLoading)
+                            ? _buildLoadingNotifications(context, isDarkMode)
+                            : _buildNotifications(context, isDarkMode),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -114,7 +110,7 @@ class Notifications extends StatelessWidget {
                     width: 10.h,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
-                      child: tasks[index].media[0].contains('https')
+                      child: tasks[index].media[0].contains('http')
                           ? CachedNetworkImage(
                               imageUrl: tasks[index].media[0],
                               fit: BoxFit.cover,

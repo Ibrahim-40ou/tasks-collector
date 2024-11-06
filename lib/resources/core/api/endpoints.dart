@@ -7,4 +7,5 @@ class EndPoints {
   static const String profile = "auth/profile";
   static const String complaint = "complaint";
   static const String deleteComplaint = "complaint/";
+  static const String perPage = "complaint?per_page=";
 }

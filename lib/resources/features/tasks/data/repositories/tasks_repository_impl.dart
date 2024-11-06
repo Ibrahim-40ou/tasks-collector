@@ -22,4 +22,9 @@ class TasksRepositoryImpl extends TasksRepository {
   Future<Result<void>> deleteTask(int id) async {
     return await tasksDatasource.deleteTask(id);
   }
+
+  @override
+  Future<Result<void>> paginatedFetch(int perPage) async {
+    return await tasksDatasource.paginatedFetch(perPage);
+  }
 }

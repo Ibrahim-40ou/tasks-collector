@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:abm/resources/core/sizing/size_config.dart';
 import 'package:abm/resources/core/widgets/back_button.dart';
@@ -38,9 +39,6 @@ class AddTaskPage extends StatelessWidget {
       providers: [
         BlocProvider<ImageSelectionBloc>(
           create: (BuildContext context) => ImageSelectionBloc(),
-        ),
-        BlocProvider<TasksBloc>(
-          create: (BuildContext context) => TasksBloc(),
         ),
         BlocProvider<ImageDeletionCubit>(
           create: (BuildContext context) => ImageDeletionCubit(),
@@ -490,7 +488,7 @@ class AddTaskPage extends StatelessWidget {
           context.read<TasksBloc>().add(
                 AddTask(
                   task: TaskModel(
-                    id: 0,
+                    id: _generateUniqueId(),
                     description: _description.text,
                     address: _address.text,
                     governorateId: CommonFunctions()
@@ -530,4 +528,12 @@ class AddTaskPage extends StatelessWidget {
 
   String? _validateField(String? value) =>
       value == null || value.isEmpty ? 'this field is required'.tr() : null;
+
+
+  int _generateUniqueId() {
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final random = Random().nextInt(1000);
+    return int.parse('$timestamp$random');
+  }
+
 }

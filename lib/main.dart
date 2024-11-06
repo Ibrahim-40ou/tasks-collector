@@ -6,6 +6,7 @@ import 'package:abm/resources/core/utils/common_functions.dart';
 import 'package:abm/resources/core/widgets/image_viewer/state/cubit/image_viewer_cubit.dart';
 import 'package:abm/resources/features/auth/presentation/state/bloc/auth_bloc.dart';
 import 'package:abm/resources/features/auth/presentation/state/cubit/timer_cubit.dart';
+import 'package:abm/resources/features/tasks/presentation/state/bloc/tasks_bloc.dart';
 import 'package:abm/resources/features/tasks/presentation/state/cubit/image_counter_cubit.dart';
 import 'package:abm/resources/features/user_information/presentation/state/bloc/user_information_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -47,9 +48,12 @@ void main() async {
           BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(),
           ),
-          BlocProvider<UserInformationBloc>(
-            create: (context) =>
-                UserInformationBloc()..add(SerializationUserEvent()),
+          BlocProvider(
+            create: (context) {
+              final userInformationBloc = UserInformationBloc();
+              userInformationBloc.add(SerializationUserEvent());
+              return userInformationBloc;
+            },
           ),
           BlocProvider<TimerCubit>(
             create: (context) => TimerCubit(),
@@ -59,6 +63,10 @@ void main() async {
           ),
           BlocProvider<ImageCounterCubit>(
             create: (BuildContext context) => ImageCounterCubit(),
+          ),
+          BlocProvider<TasksBloc>(
+            create: (BuildContext context) =>
+                TasksBloc()..add(SerializationEvent(isPagination: true)),
           ),
         ],
         child: MyApp(),

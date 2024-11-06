@@ -3,7 +3,13 @@ part of 'tasks_bloc.dart';
 @immutable
 sealed class TasksEvents {}
 
-class FetchTasks extends TasksEvents {}
+class PaginatedFetchTasks extends TasksEvents {
+  final bool isPagination;
+
+  PaginatedFetchTasks({
+    required this.isPagination,
+  });
+}
 
 class AddTask extends TasksEvents {
   final TaskModel task;
@@ -27,4 +33,10 @@ class UploadOfflineTasks extends TasksEvents {}
 
 class DeleteOfflineTasks extends TasksEvents {}
 
-class SerializationEvent extends TasksEvents {}
+class SerializationEvent extends TasksEvents {
+  final bool isPagination;
+
+  SerializationEvent({
+    required this.isPagination,
+  });
+}

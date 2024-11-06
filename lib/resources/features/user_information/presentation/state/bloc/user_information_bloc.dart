@@ -31,19 +31,31 @@ class UserInformationBloc
     on<SerializationUserEvent>(_serialize);
   }
 
+  @override
+  void onChange(Change<UserInformationState> change) {
+    // TODO: implement onChange
+    super.onChange(change);
+    print('objects');
+    print(change);
+  }
+
   Future<void> _serialize(
     SerializationUserEvent event,
     Emitter<UserInformationState> emit,
   ) async {
     await _updateUserInformation(
-        UpdateUserInformation(
-          fullName: preferences!.getString('name') ?? '',
-          avatar: preferences!.getString('avatar') ?? '',
-          governorate: preferences!.getString('governorate_id') ?? '',
-          phoneNumber: preferences!.getString('phone_number') ?? '',
-        ),
-        emit);
-    await _fetchCurrentUserInformation(FetchCurrentUserInformation(), emit);
+      UpdateUserInformation(
+        fullName: preferences!.getString('name') ?? '',
+        avatar: preferences!.getString('avatar') ?? '',
+        governorate: preferences!.getString('governorate_id') ?? '',
+        phoneNumber: preferences!.getString('phone_number') ?? '',
+      ),
+      emit,
+    );
+    await _fetchCurrentUserInformation(
+      FetchCurrentUserInformation(),
+      emit,
+    );
   }
 
   Future<void> _fetchCurrentUserInformation(

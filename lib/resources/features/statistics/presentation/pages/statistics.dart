@@ -32,15 +32,8 @@ class Statistics extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDarkMode = CommonFunctions().darkModeCheck(context);
     CommonFunctions().changeStatusBarColor(false, isDarkMode, context, null);
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<StatisticsBloc>(
-          create: (context) => StatisticsBloc(),
-        ),
-        BlocProvider<TasksBloc>(
-          create: (context) => TasksBloc()..add(SerializationEvent()),
-        ),
-      ],
+    return BlocProvider<StatisticsBloc>(
+      create: (context) => StatisticsBloc(),
       child: SafeArea(
         child: Scaffold(
           body: Padding(
@@ -338,7 +331,7 @@ class Statistics extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10),
                                 child: tasks[index]
                                         .media[mediaIndex]
-                                        .contains('https')
+                                        .contains('http')
                                     ? CachedNetworkImage(
                                         imageUrl:
                                             tasks[index].media[mediaIndex],

@@ -1,6 +1,7 @@
 import 'package:abm/resources/core/cache/database_helper.dart';
 import 'package:abm/resources/core/services/image_services.dart';
 import 'package:abm/resources/core/services/internet_services.dart';
+import 'package:abm/resources/features/tasks/domain/use_cases/paginated_fetch_use_case.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,7 +14,6 @@ import '../../../data/repositories/tasks_repository_impl.dart';
 import '../../../domain/entities/task_entity.dart';
 import '../../../domain/use_cases/add_task_use_case.dart';
 import '../../../domain/use_cases/delete_task_use_case.dart';
-import '../../../domain/use_cases/fetch_tasks_use_case.dart';
 
 part 'tasks_events.dart';
 
@@ -21,15 +21,86 @@ part 'tasks_states.dart';
 
 class TasksBloc extends Bloc<TasksEvents, TasksStates> {
   late List<TaskEntity> tasks = [];
+  late int perPage = 3;
 
   TasksBloc() : super(TasksInitial()) {
-    on<FetchTasks>(_fetchTasks);
+    on<PaginatedFetchTasks>(_paginatedFetch);
     on<AddTask>(_addTask);
     on<NoImages>(_noImages);
     on<DeleteTask>(_deleteTask);
     on<UploadOfflineTasks>(_upload);
     on<DeleteOfflineTasks>(_delete);
     on<SerializationEvent>(_serialize);
+  }
+
+  void incrementPerPage() {
+    perPage += 3;
+  }
+
+  Future<void> _paginatedFetch(
+    PaginatedFetchTasks event,
+    Emitter<TasksStates> emit,
+  ) async {
+    if (event.isPagination) {
+      emit(FetchTasksLoading());
+      if (await InternetServices().isInternetAvailable()) {
+        final Result result = await PaginatedFetchUseCase(
+          tasksRepositoryImpl: TasksRepositoryImpl(
+            tasksDatasource: TasksDatasource(
+              httpsConsumer: HttpsConsumer(),
+            ),
+          ),
+        ).call(perPage);
+        incrementPerPage();
+        if (result.isSuccess) {
+          tasks = result.data;
+          await LocalTasksDatasource(
+            databaseHelper: DatabaseHelper(),
+            imageService: ImageService(),
+            httpsConsumer: HttpsConsumer(),
+          ).storeTasks(tasks);
+          return emit(FetchTasksSuccess(tasks: tasks));
+        } else {
+          return emit(FetchTasksFailure(failure: result.error));
+        }
+      } else {
+        tasks = await LocalTasksDatasource(
+          databaseHelper: DatabaseHelper(),
+          imageService: ImageService(),
+          httpsConsumer: HttpsConsumer(),
+        ).fetchTasks();
+        return emit(FetchTasksSuccess(tasks: tasks));
+      }
+    } else {
+      emit(FetchTasksLoading());
+      if (await InternetServices().isInternetAvailable()) {
+        final Result result = await PaginatedFetchUseCase(
+          tasksRepositoryImpl: TasksRepositoryImpl(
+            tasksDatasource: TasksDatasource(
+              httpsConsumer: HttpsConsumer(),
+            ),
+          ),
+        ).call(3);
+        if (result.isSuccess) {
+          tasks = result.data;
+          await LocalTasksDatasource(
+            databaseHelper: DatabaseHelper(),
+            imageService: ImageService(),
+            httpsConsumer: HttpsConsumer(),
+          ).storeTasks(tasks);
+          return emit(FetchTasksSuccess(tasks: tasks));
+        } else {
+          return emit(FetchTasksFailure(failure: result.error));
+        }
+      } else {
+        tasks = await LocalTasksDatasource(
+          databaseHelper: DatabaseHelper(),
+          imageService: ImageService(),
+          httpsConsumer: HttpsConsumer(),
+        ).fetchTasks();
+        return emit(FetchTasksSuccess(tasks: tasks));
+      }
+    }
   }
 
   Future<void> _serialize(
@@ -39,7 +110,10 @@ class TasksBloc extends Bloc<TasksEvents, TasksStates> {
     DatabaseHelper().printAllTasks();
     await _upload(UploadOfflineTasks(), emit);
     await _delete(DeleteOfflineTasks(), emit);
-    await _fetchTasks(FetchTasks(), emit);
+    await _paginatedFetch(
+      PaginatedFetchTasks(isPagination: event.isPagination),
+      emit,
+    );
   }
 
   Future<void> _upload(
@@ -161,39 +235,6 @@ class TasksBloc extends Bloc<TasksEvents, TasksStates> {
     Emitter<TasksStates> emit,
   ) {
     return emit(NoImagesState());
-  }
-
-  Future<void> _fetchTasks(
-    FetchTasks event,
-    Emitter<TasksStates> emit,
-  ) async {
-    emit(FetchTasksLoading());
-    if (await InternetServices().isInternetAvailable()) {
-      final Result result = await FetchTasksUseCase(
-        tasksRepositoryImpl: TasksRepositoryImpl(
-          tasksDatasource: TasksDatasource(
-            httpsConsumer: HttpsConsumer(),
-          ),
-        ),
-      ).call();
-      if (result.isSuccess) {
-        tasks = result.data;
-        await LocalTasksDatasource(
-          databaseHelper: DatabaseHelper(),
-          imageService: ImageService(),
-          httpsConsumer: HttpsConsumer(),
-        ).storeTasks(tasks);
-        return emit(FetchTasksSuccess(tasks: tasks));
-      } else {
-        return emit(FetchTasksFailure(failure: result.error));
-      }
-    }
-    tasks = await LocalTasksDatasource(
-      databaseHelper: DatabaseHelper(),
-      imageService: ImageService(),
-      httpsConsumer: HttpsConsumer(),
-    ).fetchTasks();
-    return emit(FetchTasksSuccess(tasks: tasks));
   }
 
   Future<void> _addTask(

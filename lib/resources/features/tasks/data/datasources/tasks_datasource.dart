@@ -29,6 +29,21 @@ class TasksDatasource {
     }
   }
 
+  Future<Result<List<TaskEntity>>> paginatedFetch(int perPage) async {
+    late List<TaskEntity> tasks = [];
+    final result = await httpsConsumer.get(
+        endpoint: '${EndPoints.perPage}${perPage}&include=media');
+    if (result.isSuccess && result.data != null) {
+      final responseBody = jsonDecode(result.data!.body);
+      for (Map<String, dynamic> task in responseBody['data']) {
+        tasks.add(TaskModel.fromJson(task));
+      }
+      return Result<List<TaskEntity>>(data: tasks);
+    } else {
+      return Result<List<TaskEntity>>(error: result.error);
+    }
+  }
+
   Future<Result<void>> addTask(TaskModel task) async {
     List<http.MultipartFile> files = [];
     final Map<String, String> fields = task.toJson();

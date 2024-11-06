@@ -30,11 +30,15 @@ class Tasks extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDarkMode = CommonFunctions().darkModeCheck(context);
     CommonFunctions().changeStatusBarColor(false, isDarkMode, context, null);
-    return BlocProvider<TasksBloc>(
-      create: (context) => TasksBloc()..add(SerializationEvent()),
-      child: SafeArea(
-        child: Scaffold(
-          body: BlocConsumer<TasksBloc, TasksStates>(
+    return SafeArea(
+      child: Scaffold(
+        body: RefreshIndicator(
+          onRefresh: () async {
+            context
+                .read<TasksBloc>()
+                .add(SerializationEvent(isPagination: true));
+          },
+          child: BlocConsumer<TasksBloc, TasksStates>(
             listener: (BuildContext context, state) {
               if (state is DeleteTaskFailure) {
                 CommonFunctions().showDialogue(
@@ -161,13 +165,7 @@ class Tasks extends StatelessWidget {
           ),
           CustomButton(
             function: () async {
-              await context.router.push<bool>(AddTaskRoute()).then(
-                (taskAdded) {
-                  if (taskAdded == true) {
-                    context.read<TasksBloc>().add(FetchTasks());
-                  }
-                },
-              );
+              await context.router.push(AddTaskRoute());
             },
             height: 8.w,
             width: 8.w,
