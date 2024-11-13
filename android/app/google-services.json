@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "669991550893",
+    "firebase_url": "https://abm-mobile-5acef-default-rtdb.firebaseio.com",
+    "project_id": "abm-mobile-5acef",
+    "storage_bucket": "abm-mobile-5acef.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669991550893:android:abaca1024f26bbe3c66b24",
+        "android_client_info": {
+          "package_name": "com.abmibrahim.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqNZVLuceNpganJ3ivwdUR5GxT6jnfiOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

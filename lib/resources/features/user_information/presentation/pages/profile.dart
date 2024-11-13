@@ -110,6 +110,7 @@ class ProfileInformation extends StatelessWidget {
                             ),
                           ],
                         ),
+
                       ],
                     ),
                   ),

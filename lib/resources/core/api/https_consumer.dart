@@ -1,5 +1,6 @@
 import 'package:abm/main.dart';
 import 'package:http/http.dart' as http;
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'dart:convert';
 
 import '../utils/result.dart';
@@ -27,7 +28,8 @@ class HttpsConsumer {
       } else {
         return Result(error: 'Request failed: ${response.body}');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      await Sentry.captureException(e, stackTrace: stackTrace);
       return Result(error: e.toString());
     }
   }

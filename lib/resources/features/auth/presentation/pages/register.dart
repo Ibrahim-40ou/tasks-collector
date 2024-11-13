@@ -266,7 +266,7 @@ class Register extends StatelessWidget {
           controller: _phoneNumber,
           labelText: 'phone number'.tr(),
           type: TextInputType.number,
-          validatorFunction: _validateField,
+          validatorFunction: _validatePhoneNumber,
           isLast: true,
         ),
         SizedBox(height: 2.h),
@@ -395,6 +395,14 @@ class Register extends StatelessWidget {
     );
   }
 
-  String? _validateField(String? value) =>
-      value == null || value.isEmpty ? 'this field is required'.tr() : null;
+  String? _validatePhoneNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'please enter a phone number'.tr();
+    }
+    final RegExp phoneRegex = RegExp(r'^(077|078|079|075)\d{8}$');
+    if (!phoneRegex.hasMatch(value)) {
+      return 'enter a valid phone number'.tr();
+    }
+    return null;
+  }
 }

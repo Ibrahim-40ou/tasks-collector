@@ -30,7 +30,6 @@ class TaskDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // context.read<InternetBloc>().add(CheckConnection());
     bool isDarkMode = CommonFunctions().darkModeCheck(context);
     return SafeArea(
       child: Scaffold(

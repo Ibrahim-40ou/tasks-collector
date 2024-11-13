@@ -1,6 +1,6 @@
 import 'package:abm/main.dart';
 import 'package:abm/resources/core/services/image_services.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/api/https_consumer.dart';
@@ -35,8 +35,9 @@ class UserInformationBloc
   void onChange(Change<UserInformationState> change) {
     // TODO: implement onChange
     super.onChange(change);
-    print('objects');
-    print(change);
+    if (kDebugMode) {
+      print(change);
+    }
   }
 
   Future<void> _serialize(

@@ -12,8 +12,8 @@ import '../../../../core/widgets/text.dart';
 import '../state/cubit/timer_cubit.dart';
 
 @RoutePage()
-class Landing extends StatelessWidget {
-  const Landing({super.key});
+class LandingScreen extends StatelessWidget {
+  const LandingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

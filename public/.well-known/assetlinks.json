@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.abmibrahim.app",
+    "sha256_cert_fingerprints":
+    ["ED:B6:CD:D1:93:35:ED:98:85:C2:10:70:C7:7B:2A:44:5B:73:C1:56:43:92:DD:46:69:98:36:9E:92:4D:CB:07"]
+  }
+}]

@@ -32,7 +32,7 @@ class TasksDatasource {
   Future<Result<List<TaskEntity>>> paginatedFetch(int perPage) async {
     late List<TaskEntity> tasks = [];
     final result = await httpsConsumer.get(
-        endpoint: '${EndPoints.perPage}${perPage}&include=media');
+        endpoint: '${EndPoints.perPage}$perPage&include=media');
     if (result.isSuccess && result.data != null) {
       final responseBody = jsonDecode(result.data!.body);
       for (Map<String, dynamic> task in responseBody['data']) {

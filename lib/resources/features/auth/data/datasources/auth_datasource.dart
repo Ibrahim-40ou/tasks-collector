@@ -59,13 +59,17 @@ class AuthDatasource {
     required String filePath,
     required String phoneNumber,
   }) async {
-    final file = File(filePath);
-    final avatarFile = http.MultipartFile(
-      'avatar',
-      file.readAsBytes().asStream(),
-      file.lengthSync(),
-      filename: file.path.split('/').last,
-    );
+    List<http.MultipartFile> files = [];
+    if (filePath.isNotEmpty) {
+      final file = File(filePath);
+      final avatarFile = http.MultipartFile(
+        'avatar',
+        file.readAsBytes().asStream(),
+        file.lengthSync(),
+        filename: file.path.split('/').last,
+      );
+      files.add(avatarFile);
+    }
 
     final fields = {
       'name': name,
@@ -77,7 +81,7 @@ class AuthDatasource {
       endpoint: EndPoints.register,
       fields: fields,
       fileKey: 'avatar',
-      files: [avatarFile],
+      files: files,
       isProfile: true,
     );
 
