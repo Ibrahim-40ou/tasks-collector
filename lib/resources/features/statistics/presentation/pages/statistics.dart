@@ -31,7 +31,6 @@ class Statistics extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = CommonFunctions().darkModeCheck(context);
-    CommonFunctions().changeStatusBarColor(false, isDarkMode, context, null);
     return BlocProvider<StatisticsBloc>(
       create: (context) => StatisticsBloc(),
       child: SafeArea(

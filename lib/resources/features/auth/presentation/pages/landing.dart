@@ -18,7 +18,9 @@ class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = CommonFunctions().darkModeCheck(context);
-    CommonFunctions().changeStatusBarColor(false, isDarkMode, context, null);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      CommonFunctions().changeStatusBarColor(false, isDarkMode, context, null);
+    });
     return Builder(
       builder: (BuildContext context) {
         context.read<TimerCubit>().resetTimer();
@@ -40,8 +42,8 @@ class LandingScreen extends StatelessWidget {
     return Expanded(
       child: Center(
         child: CustomText(
-          text: 'TASKS\nCOLLECTOR',
-          size: 10.sp,
+          text: 'ABM',
+          size: 15.sp,
           weight: FontWeight.bold,
           align: TextAlign.center,
         ),
@@ -74,7 +76,7 @@ class LandingScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 CustomText(
-                  text: 'welcome to Tasks Collector'.tr(),
+                  text: 'welcome to abm'.tr(),
                   weight: FontWeight.bold,
                   size: CommonFunctions().englishCheck(context) ? 7.5.sp : 7.sp,
                 ),

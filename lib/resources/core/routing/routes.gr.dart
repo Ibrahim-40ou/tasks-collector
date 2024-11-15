@@ -556,14 +556,17 @@ class StatisticsNavigatorRoute extends _i21.PageRouteInfo<void> {
 class TaskDetails extends _i21.PageRouteInfo<TaskDetailsArgs> {
   TaskDetails({
     _i22.Key? key,
-    required _i24.TaskEntity task,
+    _i24.TaskEntity? task,
+    String? id,
     List<_i21.PageRouteInfo>? children,
   }) : super(
           TaskDetails.name,
           args: TaskDetailsArgs(
             key: key,
             task: task,
+            id: id,
           ),
+          rawPathParams: {'id': id},
           initialChildren: children,
         );
 
@@ -572,10 +575,13 @@ class TaskDetails extends _i21.PageRouteInfo<TaskDetailsArgs> {
   static _i21.PageInfo page = _i21.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<TaskDetailsArgs>();
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<TaskDetailsArgs>(
+          orElse: () => TaskDetailsArgs(id: pathParams.optString('id')));
       return _i18.TaskDetails(
         key: args.key,
         task: args.task,
+        id: args.id,
       );
     },
   );
@@ -584,16 +590,19 @@ class TaskDetails extends _i21.PageRouteInfo<TaskDetailsArgs> {
 class TaskDetailsArgs {
   const TaskDetailsArgs({
     this.key,
-    required this.task,
+    this.task,
+    this.id,
   });
 
   final _i22.Key? key;
 
-  final _i24.TaskEntity task;
+  final _i24.TaskEntity? task;
+
+  final String? id;
 
   @override
   String toString() {
-    return 'TaskDetailsArgs{key: $key, task: $task}';
+    return 'TaskDetailsArgs{key: $key, task: $task, id: $id}';
   }
 }
 

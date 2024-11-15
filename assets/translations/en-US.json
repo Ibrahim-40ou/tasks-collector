@@ -1,6 +1,7 @@
 {
   "welcome to Tasks Collector": "Welcome to Tasks Collector",
   "tasks collector": "Tasks Collector",
+  "welcome to abm" : "Welcome to ABM",
   "enter your mobile number to receive the verification code and log in": "Enter your mobile number to receive the verification code and log in",
   "phone number": "Phone Number",
   "continue": "Continue",
@@ -97,5 +98,12 @@
   "total tasks": "Total Tasks",
   "task": "Task",
   "accepted": "ACCEPTED",
-  "Your task submitted on 2024-11-03 in Baghdad has been approved and we are working on it.": "Your task submitted on 2024-11-03 in Baghdad has been approved and we are working on it."
+  "Your task submitted on 2024-11-03 in Baghdad has been approved and we are working on it.": "Your task submitted on 2024-11-03 in Baghdad has been approved and we are working on it.",
+  "copy link": "Copy Link",
+  "link copied to clipboard": "Link copied to clipboard",
+  "failed fetching task": "Failed fetching task",
+  "a network error has occurred. please try again later.": "A network error has occurred. Please try again later.",
+  "phone number already in use. please use a different one.": "Phone number already in use. Please use a different one.",
+  "unknown error occurred. please try again later.": "Unknown error occurred. Please try again later.",
+  "no internet connection": "No internet connection"
 }

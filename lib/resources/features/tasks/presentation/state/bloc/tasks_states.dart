@@ -29,7 +29,6 @@ class AddTaskFailure extends TasksStates {
   AddTaskFailure({required this.failure});
 }
 
-
 class DeleteTaskLoading extends TasksStates {}
 
 class DeleteTaskSuccess extends TasksStates {}
@@ -48,9 +47,9 @@ class UploadedOfflineTasksSuccess extends TasksStates {}
 
 class UploadedOfflineTasksFailure extends TasksStates {
   final String? failure;
+
   UploadedOfflineTasksFailure({required this.failure});
 }
-
 
 class DeletedOfflineTasksLoading extends TasksStates {}
 
@@ -58,6 +57,7 @@ class DeletedOfflineTasksSuccess extends TasksStates {}
 
 class DeletedOfflineTasksFailure extends TasksStates {
   final String? failure;
+
   DeletedOfflineTasksFailure({required this.failure});
 }
 

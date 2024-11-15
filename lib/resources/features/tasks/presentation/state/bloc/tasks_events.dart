@@ -40,3 +40,4 @@ class SerializationEvent extends TasksEvents {
     required this.isPagination,
   });
 }
+

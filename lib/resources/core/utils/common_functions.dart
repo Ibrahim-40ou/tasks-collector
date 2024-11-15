@@ -39,9 +39,7 @@ class CommonFunctions {
   }
 
   bool darkModeCheck(BuildContext context) {
-    return Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    return Theme.of(context).brightness == Brightness.dark;
   }
 
   bool englishCheck(BuildContext context) {
@@ -50,7 +48,7 @@ class CommonFunctions {
 
   Locale getStartingLanguage() {
     return preferences!.getString('language') == null ||
-        preferences!.getString('language') == 'en'
+            preferences!.getString('language') == 'en'
         ? const Locale('en', 'US')
         : const Locale('ar', 'DZ');
   }
@@ -59,14 +57,14 @@ class CommonFunctions {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         systemNavigationBarColor:
-        isDarkMode ? AppColors.backgroundDark : AppColors.backgroundLight,
+            isDarkMode ? AppColors.backgroundDark : AppColors.backgroundLight,
         systemNavigationBarIconBrightness:
-        isDarkMode ? Brightness.light : Brightness.dark,
+            isDarkMode ? Brightness.light : Brightness.dark,
         statusBarColor:
-        isDarkMode ? AppColors.backgroundDark : AppColors.backgroundLight,
+            isDarkMode ? AppColors.backgroundDark : AppColors.backgroundLight,
         statusBarBrightness: isDarkMode ? Brightness.dark : Brightness.light,
         statusBarIconBrightness:
-        isDarkMode ? Brightness.light : Brightness.dark,
+            isDarkMode ? Brightness.light : Brightness.dark,
       ),
     );
   }
@@ -87,25 +85,27 @@ class CommonFunctions {
     }
   }
 
-  void changeStatusBarColor(bool isPrimary,
-      bool isDarkMode,
-      BuildContext context,
-      Color? color,) {
+  void changeStatusBarColor(
+    bool isPrimary,
+    bool isDarkMode,
+    BuildContext context,
+    Color? color,
+  ) {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: isPrimary
-            ? Theme
-            .of(context)
-            .colorScheme
-            .primary
-            : color ?? Theme
-            .of(context)
-            .colorScheme
-            .surface,
+            ? Theme.of(context).colorScheme.primary
+            : color ?? Theme.of(context).colorScheme.surface,
         statusBarBrightness: isDarkMode ? Brightness.dark : Brightness.light,
         statusBarIconBrightness: isPrimary
             ? Brightness.light
             : isDarkMode
+                ? Brightness.light
+                : Brightness.dark,
+        systemNavigationBarDividerColor: Colors.transparent,
+        systemNavigationBarContrastEnforced: false,
+        systemNavigationBarColor: color,
+        systemNavigationBarIconBrightness: isDarkMode
             ? Brightness.light
             : Brightness.dark,
       ),
@@ -115,19 +115,21 @@ class CommonFunctions {
   // TODO: Resume implementing this function
   String handleErrorMessage(String error) {
     if (error.contains('Network is unreachable')) {
-      return 'A network error has occurred. Please try again later.';
+      return 'a network error has occurred. please try again later.'.tr();
     } else if (error.contains('The phone has already been taken')) {
-      return 'Phone number already in use. Please use a different one.';
+      return 'phone number already in use. please use a different one.'.tr();
     } else {
-      return 'Unknown error occurred. Please try again later.';
+      return 'unknown error occurred. please try again later.'.tr();
     }
   }
 
-  void showDialogue(BuildContext context,
-      String errorText,
-      String message,
-      Function exitDialogue,
-      Function confirmFunction,) {
+  void showDialogue(
+    BuildContext context,
+    String errorText,
+    String message,
+    Function exitDialogue,
+    Function confirmFunction,
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -142,42 +144,36 @@ class CommonFunctions {
             children: [
               errorText.isNotEmpty
                   ? Container(
-                height: 10.h,
-                margin: EdgeInsets.zero,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(10),
-                    topLeft: Radius.circular(10),
-                  ),
-                  color: Theme
-                      .of(context)
-                      .colorScheme
-                      .error,
-                ),
-                child: Center(
-                  child: Icon(
-                    Iconsax.close_circle,
-                    size: 10.w,
-                    color: Colors.white,
-                  ),
-                ),
-              )
+                      height: 10.h,
+                      margin: EdgeInsets.zero,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          topLeft: Radius.circular(10),
+                        ),
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Iconsax.close_circle,
+                          size: 10.w,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
                   : Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 5.w,
-                    top: 3.w,
-                  ),
-                  child: CustomText(
-                    text: 'confirmation'.tr(),
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .primary,
-                  ),
-                ),
-              ),
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          left: 5.w,
+                          top: 3.w,
+                        ),
+                        child: CustomText(
+                          text: 'confirmation'.tr(),
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.w),
                 child: Column(
@@ -200,8 +196,8 @@ class CommonFunctions {
                     errorText.isEmpty
                         ? Container()
                         : CustomText(
-                      text: handleErrorMessage(errorText),
-                    ),
+                            text: handleErrorMessage(errorText),
+                          ),
                     SizedBox(height: 1.h),
                     CustomButton(
                       function: () {
@@ -209,35 +205,29 @@ class CommonFunctions {
                         confirmFunction();
                       },
                       color: errorText.isEmpty
-                          ? Theme
-                          .of(context)
-                          .colorScheme
-                          .primary
-                          : Theme
-                          .of(context)
-                          .colorScheme
-                          .error,
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.error,
                       child: CustomText(
                         text:
-                        errorText.isNotEmpty ? 'okay'.tr() : 'confirm'.tr(),
+                            errorText.isNotEmpty ? 'okay'.tr() : 'confirm'.tr(),
                         color: Colors.white,
                       ),
                     ),
                     errorText.isNotEmpty
                         ? Container()
                         : CustomButton(
-                      border: true,
-                      borderColor: Colors.black,
-                      function: () {
-                        context.router.popForced(true);
-                        exitDialogue();
-                      },
-                      color: Colors.white,
-                      child: CustomText(
-                        text: 'cancel'.tr(),
-                        color: Colors.black,
-                      ),
-                    ),
+                            border: true,
+                            borderColor: Colors.black,
+                            function: () {
+                              context.router.popForced(true);
+                              exitDialogue();
+                            },
+                            color: Colors.white,
+                            child: CustomText(
+                              text: 'cancel'.tr(),
+                              color: Colors.black,
+                            ),
+                          ),
                   ],
                 ),
               ),
@@ -259,15 +249,8 @@ class CommonFunctions {
               padding: EdgeInsets.all(2.w),
               decoration: BoxDecoration(
                 color: isDarkMode
-                    ? Theme
-                    .of(context)
-                    .colorScheme
-                    .secondary
-                    .withOpacity(0.2)
-                    : Theme
-                    .of(context)
-                    .colorScheme
-                    .surface,
+                    ? Theme.of(context).colorScheme.secondary.withOpacity(0.2)
+                    : Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -287,15 +270,11 @@ class CommonFunctions {
                     padding: EdgeInsets.symmetric(horizontal: 2.w),
                     decoration: BoxDecoration(
                       color: isDarkMode
-                          ? Theme
-                          .of(context)
-                          .colorScheme
-                          .secondary
-                          .withOpacity(0.3)
-                          : Theme
-                          .of(context)
-                          .colorScheme
-                          .secondary,
+                          ? Theme.of(context)
+                              .colorScheme
+                              .secondary
+                              .withOpacity(0.3)
+                          : Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
@@ -307,33 +286,22 @@ class CommonFunctions {
                           value: darkModeCheck(context),
                           onChanged: (value) {
                             context.read<ThemeBloc>().add(
-                              ChangeTheme(
-                                isDarkMode: value,
-                              ),
-                            );
+                                  ChangeTheme(
+                                    isDarkMode: value,
+                                  ),
+                                );
                           },
                           trackOutlineColor: MaterialStateProperty.all(
-                            Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .color!,
+                            Theme.of(context).textTheme.bodyMedium!.color!,
                           ),
                           inactiveTrackColor: isDarkMode
-                              ? Theme
-                              .of(context)
-                              .colorScheme
-                              .secondary
-                              .withOpacity(0.2)
-                              : Theme
-                              .of(context)
-                              .colorScheme
-                              .secondary,
+                              ? Theme.of(context)
+                                  .colorScheme
+                                  .secondary
+                                  .withOpacity(0.2)
+                              : Theme.of(context).colorScheme.secondary,
                           activeTrackColor:
-                          Theme
-                              .of(context)
-                              .colorScheme
-                              .primary,
+                              Theme.of(context).colorScheme.primary,
                         ),
                       ],
                     ),
@@ -355,15 +323,8 @@ class CommonFunctions {
           padding: EdgeInsets.all(2.w),
           decoration: BoxDecoration(
             color: isDarkMode
-                ? Theme
-                .of(context)
-                .colorScheme
-                .secondary
-                .withOpacity(0.2)
-                : Theme
-                .of(context)
-                .colorScheme
-                .surface,
+                ? Theme.of(context).colorScheme.secondary.withOpacity(0.2)
+                : Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
@@ -384,15 +345,8 @@ class CommonFunctions {
                 },
                 height: 6.h,
                 color: isDarkMode
-                    ? Theme
-                    .of(context)
-                    .colorScheme
-                    .secondary
-                    .withOpacity(0.2)
-                    : Theme
-                    .of(context)
-                    .colorScheme
-                    .secondary,
+                    ? Theme.of(context).colorScheme.secondary.withOpacity(0.2)
+                    : Theme.of(context).colorScheme.secondary,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 2.w),
                   child: Row(
@@ -408,11 +362,7 @@ class CommonFunctions {
                           borderRadius: BorderRadius.circular(100),
                           border: Border.all(
                             color:
-                            Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .color!,
+                                Theme.of(context).textTheme.bodyMedium!.color!,
                           ),
                         ),
                         child: ClipRRect(
@@ -420,11 +370,10 @@ class CommonFunctions {
                           child: Container(
                             color: englishCheck(context)
                                 ? Colors.transparent
-                                : Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .color!,
+                                : Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .color!,
                           ),
                         ),
                       ),
@@ -439,15 +388,8 @@ class CommonFunctions {
                 },
                 height: 6.h,
                 color: isDarkMode
-                    ? Theme
-                    .of(context)
-                    .colorScheme
-                    .secondary
-                    .withOpacity(0.2)
-                    : Theme
-                    .of(context)
-                    .colorScheme
-                    .secondary,
+                    ? Theme.of(context).colorScheme.secondary.withOpacity(0.2)
+                    : Theme.of(context).colorScheme.secondary,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 2.w),
                   child: Row(
@@ -463,22 +405,14 @@ class CommonFunctions {
                           borderRadius: BorderRadius.circular(100),
                           border: Border.all(
                             color:
-                            Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .color!,
+                                Theme.of(context).textTheme.bodyMedium!.color!,
                           ),
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(100),
                           child: Container(
                             color: englishCheck(context)
-                                ? Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .color!
+                                ? Theme.of(context).textTheme.bodyMedium!.color!
                                 : Colors.transparent,
                           ),
                         ),
@@ -495,9 +429,7 @@ class CommonFunctions {
   }
 
   void showSnackBar(BuildContext context, String text) {
-    final bool isDarkMode = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -513,10 +445,7 @@ class CommonFunctions {
           children: [
             Icon(
               Icons.check,
-              color: Theme
-                  .of(context)
-                  .colorScheme
-                  .primary,
+              color: Theme.of(context).colorScheme.primary,
               size: 6.w,
             ),
             SizedBox(width: 2.w),
@@ -528,11 +457,7 @@ class CommonFunctions {
           ],
         ),
         duration: const Duration(seconds: 3),
-        backgroundColor: Theme
-            .of(context)
-            .textTheme
-            .bodyMedium!
-            .color!,
+        backgroundColor: Theme.of(context).textTheme.bodyMedium!.color!,
       ),
     );
   }

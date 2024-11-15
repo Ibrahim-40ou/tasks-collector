@@ -27,4 +27,9 @@ class TasksRepositoryImpl extends TasksRepository {
   Future<Result<void>> paginatedFetch(int perPage) async {
     return await tasksDatasource.paginatedFetch(perPage);
   }
+
+  @override
+  Future<Result<void>> fetchTaskByID(String id) async {
+    return await tasksDatasource.fetchTaskByID(id);
+  }
 }

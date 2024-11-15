@@ -16,7 +16,6 @@ class InitialScreen extends StatelessWidget {
       context.router.replaceAll([App()]);
     } else {
       context.router.replaceAll([LandingNavigationRoute()]);
-
     }
     return SafeArea(
       child: Scaffold(
@@ -29,5 +28,3 @@ class InitialScreen extends StatelessWidget {
     );
   }
 }
-
-

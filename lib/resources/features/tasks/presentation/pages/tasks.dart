@@ -8,9 +8,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../../../../main.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../../../core/widgets/text.dart';
@@ -28,8 +30,12 @@ class Tasks extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (preferences!.getString('deepLink') != null) {
+      AutoRouter.of(context)
+          .push(TaskDetails(id: preferences!.getString('deepLink')));
+      preferences!.remove('deepLink');
+    }
     bool isDarkMode = CommonFunctions().darkModeCheck(context);
-    CommonFunctions().changeStatusBarColor(false, isDarkMode, context, null);
     return SafeArea(
       child: Scaffold(
         body: RefreshIndicator(
@@ -207,6 +213,7 @@ class Tasks extends StatelessWidget {
               context.router.push(
                 TaskDetails(
                   task: tasks[index],
+                  id: null,
                 ),
               );
             },
@@ -285,6 +292,31 @@ class Tasks extends StatelessWidget {
                                                         .colorScheme
                                                         .surface,
                                               ),
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      child: CustomButton(
+                                        function: () {
+                                          Clipboard.setData(
+                                            ClipboardData(
+                                              text:
+                                                  'http://abm-mobile-5acef.firebaseapp.com/app/tasksNavigator/details/${tasks[index].id}',
+                                            ),
+                                          );
+                                          CommonFunctions().showSnackBar(
+                                              context,
+                                              'link copied to clipboard'.tr());
+                                          context.router.popForced();
+                                        },
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        disabled:
+                                            loadingState is DeleteTaskLoading,
+                                        child: CustomText(
+                                          text: 'copy link'.tr(),
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ];

@@ -8,4 +8,6 @@ abstract class TasksRepository {
   Future<void> deleteTask(int id);
 
   Future<void> paginatedFetch(int perPage);
+
+  Future<void> fetchTaskByID(String id);
 }

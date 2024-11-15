@@ -1,4 +1,5 @@
 import 'package:abm/resources/core/routing/routes.dart';
+import 'package:abm/resources/core/routing/routes.gr.dart';
 import 'package:abm/resources/core/sizing/size_config.dart';
 import 'package:abm/resources/core/theme/theme.dart';
 import 'package:abm/resources/core/theme/theme_state/theme_bloc.dart';
@@ -110,17 +111,23 @@ class MyApp extends StatelessWidget {
             CommonFunctions().initiateSystemThemes(isDarkMode);
             SizeConfig().init(constraints);
             return MaterialApp.router(
-              title: 'Tasks Collector',
+              title: 'ABM',
               debugShowCheckedModeBanner: false,
               localizationsDelegates: context.localizationDelegates,
               supportedLocales: context.supportedLocales,
               locale: context.locale,
               routerConfig: appRouter.config(
                 deepLinkBuilder: (deepLink) {
-                  print(deepLink.path);
-                  print('yoyo');
-                  if (deepLink.path.startsWith('/register')) {
-                    return deepLink;
+                  if (deepLink.path
+                      .startsWith('/app/tasksNavigator/details/')) {
+                    if (preferences!.getBool('loggedIn') != true) {
+                      preferences!
+                          .setString('deepLink', deepLink.path.split('/').last);
+                      return DeepLink.defaultPath;
+                    } else {
+                      DeepLink([App()]);
+                      return deepLink;
+                    }
                   } else {
                     return DeepLink.defaultPath;
                   }
@@ -144,3 +151,21 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+// print('hello world 2');
+// final String id = deepLink.path
+//     .substring('/app/tasksNavigator/details/'.length);
+// final Result result = await TasksDatasource(httpsConsumer: HttpsConsumer())
+//     .fetchTask(id);
+
+//
+// deepLinkBuilder: (deepLink) {
+// print('hello 1');
+// if (deepLink.path.startsWith('/app/settingsNavigator')) {
+// print('hello 2');
+// return deepLink;
+// } else {
+// print('hello 3');
+// return DeepLink.defaultPath;
+// }
+// },

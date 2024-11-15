@@ -1,6 +1,7 @@
 {
   "welcome to Tasks Collector": "مرحبا بك في جامع المهام",
   "tasks collector": "جامع المهام",
+  "welcome to abm" : "مرحبا بك في ABM",
   "enter your mobile number to receive the verification code and log in": "أدخل رقم هاتفك للحصول على رمز التحقق",
   "phone number": "رقم الهاتف",
   "continue": "الاستمرار",
@@ -97,5 +98,12 @@
   "total tasks": "المهام الكلية",
   "task": "مهمة",
   "accepted": "مقبولة",
-  "Your task submitted on 2024-11-03 in Baghdad has been approved and we are working on it.": "تم قبول المهمة المرسلة في 2024-11-3 من بغداد والعمل عليها جار."
+  "Your task submitted on 2024-11-03 in Baghdad has been approved and we are working on it.": "تم قبول المهمة المرسلة في 2024-11-3 من بغداد والعمل عليها جار.",
+  "copy link": "نسخ الرابط",
+  "link copied to clipboard": "تم نسخ الرابط",
+  "failed fetching task": "حدث خطأ في جلب المهمة",
+  "a network error has occurred. please try again later.": "حدث خطأ في الشبكة. يرجى المحاولة لاحقا.",
+  "phone number already in use. please use a different one.": "رقم الهاتف مستخدم بالفعل. ألرجاء استخدام رقم مغاير.",
+  "unknown error occurred. please try again later.": "حدث خطأ غير معلوم. يرجى المحاولة لاحقا",
+  "no internet connection": "لا يوجد انترنت"
 }

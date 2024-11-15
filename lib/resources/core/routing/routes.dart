@@ -58,7 +58,7 @@ class AppRouter extends RootStackRouter {
                   initial: true,
                 ),
                 AutoRoute(page: AddTaskRoute.page, path: 'addTask'),
-                AutoRoute(page: TaskDetails.page, path: 'details'),
+                AutoRoute(page: TaskDetails.page, path: 'details/:id'),
                 AutoRoute(page: ImageViewer.page, path: 'viewer'),
               ],
             ),

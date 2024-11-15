@@ -25,7 +25,6 @@ class Notifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = CommonFunctions().darkModeCheck(context);
-    CommonFunctions().changeStatusBarColor(false, isDarkMode, context, null);
     return BlocConsumer<TasksBloc, TasksStates>(
       listener: (BuildContext context, TasksStates state) {},
       builder: (BuildContext context, TasksStates state) {

@@ -5,6 +5,8 @@ import 'package:abm/resources/core/sizing/size_config.dart';
 import 'package:abm/resources/core/utils/common_functions.dart';
 import 'package:abm/resources/core/widgets/back_button.dart';
 import 'package:abm/resources/core/widgets/text.dart';
+import 'package:abm/resources/features/tasks/presentation/state/bloc/task_details_bloc.dart';
+import 'package:abm/resources/features/tasks/presentation/widgets/shimmer_container.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -21,16 +23,106 @@ import '../state/cubit/image_counter_cubit.dart';
 
 @RoutePage()
 class TaskDetails extends StatelessWidget {
-  final TaskEntity task;
+  final String? id;
+  TaskEntity? task;
 
-  const TaskDetails({
+  TaskDetails({
     super.key,
-    required this.task,
+    this.task,
+    @PathParam('id') this.id,
   });
 
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = CommonFunctions().darkModeCheck(context);
+
+    return BlocProvider<TaskDetailsBloc>(
+      create: (_) {
+        final bloc = TaskDetailsBloc();
+        if (id != null) {
+          bloc.add(FetchTaskByID(id: id!));
+        }
+        return bloc;
+      },
+      child: BlocBuilder<TaskDetailsBloc, TaskDetailsStates>(
+        builder: (context, state) {
+          if (state is FetchTaskByIDLoading) {
+            return _buildLoadingWidget();
+          } else if (state is FetchTaskByIDFailure) {
+            return _buildFailureMessage(context, state.failure!);
+          } else if (state is FetchTaskByIDSuccess) {
+            task = state.task;
+            return _buildTaskDetailsView(context, isDarkMode);
+          }
+          return _buildTaskDetailsView(
+            context,
+            isDarkMode,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildLoadingWidget() {
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: EdgeInsets.all(2.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomBackButton(),
+              SizedBox(height: 2.h),
+              CustomText(
+                text: 'task details'.tr(),
+                size: 8.sp,
+                weight: FontWeight.w500,
+              ),
+              SizedBox(height: 2.h),
+              CustomTasksShimmer(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFailureMessage(BuildContext context, String error) {
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: EdgeInsets.all(2.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomBackButton(),
+              SizedBox(height: 2.h),
+              CustomText(
+                text: 'task details'.tr(),
+                size: 8.sp,
+                weight: FontWeight.w500,
+              ),
+              SizedBox(height: 20.h),
+              Center(
+                child: Column(
+                  children: [
+                    CustomText(
+                      text: 'failed fetching task'.tr(),
+                    ),
+                    CustomText(text: error),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTaskDetailsView(BuildContext context, bool isDarkMode) {
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -42,7 +134,13 @@ class TaskDetails extends StatelessWidget {
               children: [
                 CustomBackButton(),
                 SizedBox(height: 2.h),
-                _buildTask(context, isDarkMode),
+                CustomText(
+                  text: 'task details'.tr(),
+                  size: 8.sp,
+                  weight: FontWeight.w500,
+                ),
+                SizedBox(height: 2.h),
+                task != null ? _buildTask(context, isDarkMode) : Container(),
               ],
             ),
           ),
@@ -55,17 +153,10 @@ class TaskDetails extends StatelessWidget {
     final pageController = PageController();
     final counterOpacityCubit = CounterOpacityCubit();
     Timer? timer;
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomText(
-          text: 'task details'.tr(),
-          size: 8.sp,
-          weight: FontWeight.w500,
-        ),
-        SizedBox(height: 2.h),
         Container(
           padding: EdgeInsets.all(2.w),
           decoration: BoxDecoration(
@@ -79,13 +170,13 @@ class TaskDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
-                text: '${CommonFunctions().getStatus(task.statusId)}_1'.tr(),
+                text: '${CommonFunctions().getStatus(task!.statusId)}_1'.tr(),
                 color: Theme.of(context).colorScheme.primary,
                 weight: FontWeight.w600,
                 size: 6.sp,
               ),
               SizedBox(height: 1.h),
-              CustomText(text: task.description),
+              CustomText(text: task!.description),
               SizedBox(height: 1.h),
               Container(
                 height: 25.h,
@@ -97,7 +188,7 @@ class TaskDetails extends StatelessWidget {
                   children: [
                     PageView.builder(
                       controller: pageController,
-                      itemCount: task.media.length,
+                      itemCount: task!.media.length,
                       onPageChanged: (pageIndex) {
                         context
                             .read<ImageCounterCubit>()
@@ -114,7 +205,7 @@ class TaskDetails extends StatelessWidget {
                           onTap: () {
                             context.router.push(
                               ImageViewer(
-                                imageUrls: task.media,
+                                imageUrls: task!.media,
                                 initialIndex: index,
                               ),
                             );
@@ -125,9 +216,9 @@ class TaskDetails extends StatelessWidget {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: task.media[index].contains('http')
+                              child: task!.media[index].contains('http')
                                   ? CachedNetworkImage(
-                                      imageUrl: task.media[index],
+                                      imageUrl: task!.media[index],
                                       fit: BoxFit.cover,
                                       placeholder: (context, url) => Center(
                                         child: CustomLoadingIndicator(
@@ -144,7 +235,7 @@ class TaskDetails extends StatelessWidget {
                                       ),
                                     )
                                   : Image.file(
-                                      File(task.media[index]),
+                                      File(task!.media[index]),
                                       fit: BoxFit.cover,
                                       errorBuilder:
                                           (context, error, stackTrace) {
@@ -180,7 +271,7 @@ class TaskDetails extends StatelessWidget {
                                   ),
                                   child: CustomText(
                                     text:
-                                        '${pageIndex + 1}/${task.media.length}',
+                                        '${pageIndex + 1}/${task!.media.length}',
                                     color: Colors.white,
                                     size: 4.sp,
                                   ),
@@ -210,7 +301,7 @@ class TaskDetails extends StatelessWidget {
             SizedBox(width: 2.w),
             CustomText(
               text:
-                  '${capitalizeFirstLetter(CommonFunctions().getGovernorateName(task.governorateId)!)}, ${task.address}',
+                  '${capitalizeFirstLetter(CommonFunctions().getGovernorateName(task!.governorateId)!)}, ${task!.address}',
             ),
           ],
         ),
@@ -226,7 +317,7 @@ class TaskDetails extends StatelessWidget {
             ),
             SizedBox(width: 2.w),
             CustomText(
-              text: _formatDate(task.date),
+              text: _formatDate(task!.date),
             ),
           ],
         ),
@@ -236,9 +327,7 @@ class TaskDetails extends StatelessWidget {
 
   String _formatDate(String isoDate) {
     DateTime dateTime = DateTime.parse(isoDate).toLocal();
-    String formattedDate =
-        DateFormat('yyyy-MM-dd, EEEE, hh:mm a').format(dateTime);
-    return formattedDate;
+    return DateFormat('yyyy-MM-dd, EEEE, hh:mm a').format(dateTime);
   }
 
   String capitalizeFirstLetter(String word) {

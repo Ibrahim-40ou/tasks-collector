@@ -147,8 +147,6 @@
 // }
 //
 
-
-
 import 'package:abm/resources/core/routing/routes.gr.dart';
 import 'package:abm/resources/core/sizing/size_config.dart';
 import 'package:auto_route/auto_route.dart';
@@ -157,102 +155,126 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../utils/common_functions.dart';
 
 @RoutePage()
 class App extends StatelessWidget {
   App({super.key});
 
-
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode =
-    Theme.of(context).brightness == Brightness.dark ? true : false;
+    bool isDarkMode = CommonFunctions().darkModeCheck(context);
+
     return AutoTabsRouter(
       routes: [
-        Tasks(),
-        Notifications(),
-        Statistics(),
-        Settings(),
+        TasksNavigatorRoute(),
+        NotificationsNavigatorRoute(),
+        StatisticsNavigatorRoute(),
+        SettingsNavigatorRoute(),
       ],
       builder: (context, child) {
         final tabsRouter = AutoTabsRouter.of(context);
+        if (tabsRouter.current.name == 'SettingsNavigatorRoute') {
+          CommonFunctions().changeStatusBarColor(
+            true,
+            isDarkMode,
+            context,
+            null,
+          );
+        } else {
+          CommonFunctions().changeStatusBarColor(
+            false,
+            isDarkMode,
+            context,
+            null,
+          );
+        }
+        final shouldHideNavBar = [
+          TaskDetails.name,
+          AddTaskRoute.name,
+          ImageViewer.name,
+          ProfileInformation.name,
+        ].contains(tabsRouter.topRoute.name);
+
         return Scaffold(
           body: child,
-          bottomNavigationBar: BottomNavigationBar(
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            onTap: (index) {
-              tabsRouter.setActiveIndex(index);
-            },
-            currentIndex: tabsRouter.activeIndex,
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Iconsax.home,
-                  size: 6.w,
-                  color: Theme.of(context).textTheme.bodyMedium!.color!,
+          bottomNavigationBar: shouldHideNavBar
+              ? null
+              : BottomNavigationBar(
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  onTap: (index) {
+                    tabsRouter.setActiveIndex(index);
+                  },
+                  currentIndex: tabsRouter.activeIndex,
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Iconsax.home,
+                        size: 6.w,
+                        color: Theme.of(context).textTheme.bodyMedium!.color!,
+                      ),
+                      activeIcon: Icon(
+                        Iconsax.home_15,
+                        size: 6.w,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      label: 'Home',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Iconsax.notification,
+                        size: 6.w,
+                        color: Theme.of(context).textTheme.bodyMedium!.color!,
+                      ),
+                      activeIcon: Icon(
+                        Iconsax.notification5,
+                        size: 6.w,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      label: 'Notifications',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Iconsax.graph,
+                        size: 6.w,
+                        color: Theme.of(context).textTheme.bodyMedium!.color!,
+                      ),
+                      activeIcon: Icon(
+                        Iconsax.graph5,
+                        size: 6.w,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      label: 'Statistics',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: SvgPicture.asset(
+                        isDarkMode
+                            ? 'assets/images/dark_settings.svg'
+                            : 'assets/images/light_settings.svg',
+                        height: 6.w,
+                        width: 6.w,
+                      ),
+                      activeIcon: SvgPicture.asset(
+                        'assets/images/selected_settings.svg',
+                        height: 6.w,
+                        width: 6.w,
+                      ),
+                      label: 'Settings',
+                    ),
+                  ],
+                  selectedLabelStyle: GoogleFonts.cairo(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.normal,
+                  ),
+                  unselectedLabelStyle: GoogleFonts.cairo(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.normal,
+                  ),
+                  selectedItemColor: Theme.of(context).colorScheme.primary,
+                  unselectedItemColor: isDarkMode ? Colors.white : Colors.black,
                 ),
-                activeIcon: Icon(
-                  Iconsax.home_15,
-                  size: 6.w,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Iconsax.notification,
-                  size: 6.w,
-                  color: Theme.of(context).textTheme.bodyMedium!.color!,
-                ),
-                activeIcon: Icon(
-                  Iconsax.notification5,
-                  size: 6.w,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                label: 'Notifications',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Iconsax.graph,
-                  size: 6.w,
-                  color: Theme.of(context).textTheme.bodyMedium!.color!,
-                ),
-                activeIcon: Icon(
-                  Iconsax.graph5,
-                  size: 6.w,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                label: 'Statistics',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  isDarkMode
-                      ? 'assets/images/dark_settings.svg'
-                      : 'assets/images/light_settings.svg',
-                  height: 6.w,
-                  width: 6.w,
-                ),
-                activeIcon: SvgPicture.asset(
-                  'assets/images/selected_settings.svg',
-                  height: 6.w,
-                  width: 6.w,
-                ),
-                label: 'Settings',
-              ),
-            ],
-            selectedLabelStyle: GoogleFonts.cairo(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.normal,
-            ),
-            unselectedLabelStyle: GoogleFonts.cairo(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.normal,
-            ),
-            selectedItemColor: Theme.of(context).colorScheme.primary,
-            unselectedItemColor: isDarkMode ? Colors.white : Colors.black,
-          ),
         );
       },
     );

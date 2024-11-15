@@ -22,7 +22,6 @@ class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = CommonFunctions().darkModeCheck(context);
-    CommonFunctions().changeStatusBarColor(true, isDarkMode, context, null);
     return BlocConsumer<UserInformationBloc, UserInformationState>(
       listener: (BuildContext context, state) {
         if (state is FetchCurrentUserInformationFailure) {

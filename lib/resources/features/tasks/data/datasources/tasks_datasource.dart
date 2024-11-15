@@ -29,6 +29,19 @@ class TasksDatasource {
     }
   }
 
+  Future<Result<TaskEntity>> fetchTaskByID(String id) async {
+    late TaskEntity task;
+    final result = await httpsConsumer.get(
+        endpoint: '${EndPoints.complaint}/$id?include=media');
+    if (result.isSuccess && result.data != null) {
+      final responseBody = jsonDecode(result.data!.body);
+      task = TaskModel.fromJson(responseBody);
+      return Result<TaskEntity>(data: task);
+    } else {
+      return Result<TaskEntity>(error: result.error);
+    }
+  }
+
   Future<Result<List<TaskEntity>>> paginatedFetch(int perPage) async {
     late List<TaskEntity> tasks = [];
     final result = await httpsConsumer.get(
